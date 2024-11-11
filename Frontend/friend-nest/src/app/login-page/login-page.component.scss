@@ -1,0 +1,35 @@
+input {
+  border-radius: 2rem;
+  width: 15rem;
+}
+
+.top-button ::ng-deep .p-button {
+  width: 15rem;
+}
+
+.primary-color{
+  color: var(--primary-color);
+}
+
+::ng-deep {
+  .p-dialog {
+    &-header {
+      background-color: black;
+      color: white;
+    }
+    &-content {
+      background-color: black;
+      color: white;
+    }
+    &-footer {
+      background-color: black;
+      color: white;
+    }
+    width: 35rem
+  }
+  .p-dropdown {
+    width: 20rem;
+  }
+}
+
+
