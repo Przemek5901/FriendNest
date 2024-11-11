@@ -1,0 +1,74 @@
+<div class="grid mt-8">
+  <p-toast />
+  <div class="col-7 flex align-items-center justify-content-center">
+    <div class="w-13rem">
+      <img ngSrc="assets/logo-big.png" style="max-width: 100%; height: auto;" alt="Logo" height="1065" width="2000">
+    </div>
+    <div>
+      <p class="font-bold text-8xl vertical-align-top">
+        Friend<span class="primary-color">Nest</span>
+      </p>
+    </div>
+  </div>
+  <div class="col-5">
+    <p class="font-bold text-7xl">
+      Aktualności z życia <span class="primary-color">Twoich</span> znajomych
+    </p>
+    <p class="font-light text-4xl">Dołącz już dziś!</p>
+    <div class="flex flex-wrap w-19rem">
+      <form [formGroup]="loginForm">
+        <input type="text"  class="mb-2" pInputText placeholder="Login" formControlName="login"/>
+        <input class="mb-3" type="text" pInputText placeholder="Hasło" formControlName="password"/>
+        <p-button label="Zaloguj się" class="top-button"
+                  [rounded]="true" [outlined]="true" (onClick)="onLogin()"/>
+      </form>
+      <p class="font-light text-xl">Nie masz jeszcze konta?</p>
+      <p-button label="Zarejestruj" class="top-button" [rounded]="true" (onClick)="showDialog()"/>
+    </div>
+  </div>
+</div>
+
+<p-dialog
+  [(visible)]="visible"
+  [modal]="true">
+  <ng-template pTemplate="header">
+    <span class="ml-5 font-bold text-2xl">Zarejestruj się</span>
+  </ng-template>
+  <form [formGroup]="registerForm">
+    <div class="ml-5 mr-5">
+      <span class="p-text-secondary block mb-5">Podaj swoje dane do rejestracji</span>
+      <div class="flex align-items-center gap-3 mb-3">
+        <label for="username" class="font-semibold w-7rem">Nazwa profilu</label>
+        <input
+          pInputText id="username" formControlName="userName"
+          class="w-20rem" autocomplete="off"/>
+      </div>
+      <div class="flex align-items-center gap-3 mb-3">
+        <label for="login" class="font-semibold w-7rem">Login</label>
+        <input
+          pInputText id="login" formControlName="login"
+          class="w-20rem" autocomplete="off"/>
+      </div>
+      <div class="flex align-items-center gap-3 mb-3">
+        <label for="password" class="font-semibold w-7rem">Hasło</label>
+        <input
+          pInputText id="password" formControlName="password"
+          class="w-20rem" autocomplete="off"/>
+      </div>
+      <div class="flex align-items-center gap-3 mb3">
+        <label class="font-semibold w-7rem">Płeć</label>
+        <p-dropdown
+          [options]="genders"
+          formControlName="gender"
+          appendTo="body"
+          optionLabel="value"/>
+      </div>
+    </div>
+  </form>
+  <ng-template pTemplate="footer" class="flex align-items-center justify-content-cente">
+      <p-button
+        label="Zarejestruj"
+        [text]="true"
+        (onClick)="onRegister()"/>
+  </ng-template>
+</p-dialog>
