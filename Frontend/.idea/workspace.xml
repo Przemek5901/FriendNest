@@ -1,0 +1,81 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<project version="4">
+  <component name="ChangeListManager">
+    <list default="true" id="7d133728-3afa-4915-8b3b-96da684c1b2e" name="Changes" comment="">
+      <change afterPath="$PROJECT_DIR$/.idea/workspace.xml" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/friend-nest/src/app/main-page/comment/comment.component.html" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/friend-nest/src/app/main-page/comment/comment.component.scss" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/friend-nest/src/app/main-page/comment/comment.component.spec.ts" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/friend-nest/src/app/main-page/comment/comment.component.ts" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/friend-nest/src/app/main-page/left-sidebar/left-sidebar.component.html" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/friend-nest/src/app/main-page/left-sidebar/left-sidebar.component.scss" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/friend-nest/src/app/main-page/left-sidebar/left-sidebar.component.spec.ts" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/friend-nest/src/app/main-page/left-sidebar/left-sidebar.component.ts" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/friend-nest/src/app/main-page/rigth-sidebar/rigth-sidebar.component.html" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/friend-nest/src/app/main-page/rigth-sidebar/rigth-sidebar.component.scss" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/friend-nest/src/app/main-page/rigth-sidebar/rigth-sidebar.component.spec.ts" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/friend-nest/src/app/main-page/rigth-sidebar/rigth-sidebar.component.ts" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/friend-nest/src/app/main-page/main-page.component.html" beforeDir="false" afterPath="$PROJECT_DIR$/friend-nest/src/app/main-page/main-page.component.html" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/friend-nest/src/app/main-page/main-page.component.ts" beforeDir="false" afterPath="$PROJECT_DIR$/friend-nest/src/app/main-page/main-page.component.ts" afterDir="false" />
+    </list>
+    <option name="SHOW_DIALOG" value="false" />
+    <option name="HIGHLIGHT_CONFLICTS" value="true" />
+    <option name="HIGHLIGHT_NON_ACTIVE_CHANGELIST" value="false" />
+    <option name="LAST_RESOLUTION" value="IGNORE" />
+  </component>
+  <component name="Git.Settings">
+    <option name="RECENT_GIT_ROOT_PATH" value="$PROJECT_DIR$/.." />
+  </component>
+  <component name="GitHubPullRequestSearchHistory"><![CDATA[{
+  "lastFilter": {
+    "state": "OPEN",
+    "assignee": "Przemek5901"
+  }
+}]]></component>
+  <component name="GithubPullRequestsUISettings"><![CDATA[{
+  "selectedUrlAndAccountId": {
+    "url": "https://github.com/Przemek5901/FriendNest.git",
+    "accountId": "69499469-7e61-440d-9b66-91f1ffe71cf3"
+  }
+}]]></component>
+  <component name="ProjectColorInfo">{
+  &quot;associatedIndex&quot;: 4
+}</component>
+  <component name="ProjectId" id="2od7WD38yVla0HtYz7enQA73Ppe" />
+  <component name="ProjectViewState">
+    <option name="hideEmptyMiddlePackages" value="true" />
+    <option name="showLibraryContents" value="true" />
+  </component>
+  <component name="PropertiesComponent"><![CDATA[{
+  "keyToString": {
+    "RunOnceActivity.ShowReadmeOnStart": "true",
+    "git-widget-placeholder": "main-page",
+    "last_opened_file_path": "D:/Git/FriendNest/Frontend/friend-nest",
+    "nodejs_package_manager_path": "npm",
+    "vue.rearranger.settings.migration": "true"
+  }
+}]]></component>
+  <component name="SharedIndexes">
+    <attachedChunks>
+      <set>
+        <option value="bundled-js-predefined-d6986cc7102b-5c90d61e3bab-JavaScript-WS-242.23726.96" />
+      </set>
+    </attachedChunks>
+  </component>
+  <component name="SpellCheckerSettings" RuntimeDictionaries="0" Folders="0" CustomDictionaries="0" DefaultDictionary="application-level" UseSingleDictionary="true" transferred="true" />
+  <component name="TaskManager">
+    <task active="true" id="Default" summary="Default task">
+      <changelist id="7d133728-3afa-4915-8b3b-96da684c1b2e" name="Changes" comment="" />
+      <created>1731187627826</created>
+      <option name="number" value="Default" />
+      <option name="presentableId" value="Default" />
+      <updated>1731187627826</updated>
+      <workItem from="1731187628897" duration="282000" />
+      <workItem from="1731434132067" duration="27000" />
+    </task>
+    <servers />
+  </component>
+  <component name="TypeScriptGeneratedFilesManager">
+    <option name="version" value="3" />
+  </component>
+</project>
