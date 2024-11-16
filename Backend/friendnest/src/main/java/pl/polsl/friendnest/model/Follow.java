@@ -1,8 +1,7 @@
 package pl.polsl.friendnest.model;
 
 import jakarta.persistence.*;
-import lombok.Getter;
-import lombok.Setter;
+import lombok.*;
 import org.hibernate.annotations.OnDelete;
 import org.hibernate.annotations.OnDeleteAction;
 
@@ -11,6 +10,9 @@ import java.time.OffsetDateTime;
 @Getter
 @Setter
 @Entity
+@Builder
+@NoArgsConstructor
+@AllArgsConstructor
 @Table(name = "\"FOLLOW\"")
 public class Follow {
     @EmbeddedId
