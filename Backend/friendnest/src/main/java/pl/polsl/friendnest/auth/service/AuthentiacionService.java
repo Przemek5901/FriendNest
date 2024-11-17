@@ -47,12 +47,19 @@ public class AuthentiacionService {
     }
 
     public AuthenticationResponse authenticate(AuthenticationRequest request) {
-        authenticationManager.authenticate(new UsernamePasswordAuthenticationToken(
-                        request.getLogin(),request.getPassword()
-                )
-        );
+        try {
+            authenticationManager.authenticate(
+                    new UsernamePasswordAuthenticationToken(
+                            request.getLogin(),
+                            request.getPassword()
+                    )
+            );
+        } catch (Exception ex) {
+            throw new CustomException("Nieprawidłowy login lub hasło");
+        }
+
         var user = userRepository.findByLogin(request.getLogin())
-                .orElseThrow();
+                .orElseThrow(() -> new CustomException("Nieprawidłowy login lub hasło"));
         var jwtToken = jwtService.generateToken(user);
         return AuthenticationResponse.builder().token(jwtToken).build();
     }

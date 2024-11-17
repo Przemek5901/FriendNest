@@ -8,7 +8,7 @@ import {
   Validators,
 } from '@angular/forms';
 import { ButtonModule } from 'primeng/button';
-import { NgOptimizedImage } from '@angular/common';
+import { NgIf, NgOptimizedImage } from '@angular/common';
 import { DialogModule } from 'primeng/dialog';
 import { AvatarModule } from 'primeng/avatar';
 import { DropdownModule } from 'primeng/dropdown';
@@ -17,10 +17,13 @@ import { genderList } from '../costants/GenderList';
 import { MessageService } from 'primeng/api';
 import { RippleModule } from 'primeng/ripple';
 import { ToastModule } from 'primeng/toast';
-import { FormErrorBase } from '../utils/form-error-base';
-import { Router } from '@angular/router';
 import { LoginService } from '../services/login.service';
-import { User } from '../models/User';
+import { SpinnerComponent } from '../utils/spinner/spinner.component';
+import { AuthService } from '../services/auth.service';
+import { BaseComponent } from '../utils/base-component';
+import { RegisterRequest } from '../models/RegisterRequest';
+import { Router } from '@angular/router';
+import { AuthenticationResponse } from '../models/AuthenticationResponse';
 
 @Component({
   selector: 'app-login-page',
@@ -36,22 +39,27 @@ import { User } from '../models/User';
     ReactiveFormsModule,
     ToastModule,
     RippleModule,
+    NgIf,
+    SpinnerComponent,
   ],
   providers: [MessageService],
   templateUrl: './login-page.component.html',
   styleUrl: './login-page.component.scss',
 })
-export class LoginPageComponent extends FormErrorBase implements OnInit {
+export class LoginPageComponent extends BaseComponent implements OnInit {
   genders: Gender[] | undefined = genderList;
   visible: boolean = false;
   registerForm: FormGroup;
   loginForm: FormGroup;
+
+  isLoading = false;
 
   constructor(
     private fb: FormBuilder,
     messageService: MessageService,
     private router: Router,
     private loginService: LoginService,
+    private authService: AuthService,
   ) {
     super(messageService);
     this.registerForm = this.fb.group({
@@ -84,30 +92,41 @@ export class LoginPageComponent extends FormErrorBase implements OnInit {
     }
     if (this.registerForm.valid) {
       this.loginService
-        .register(this.userFormToUser(this.registerForm))
-        .subscribe();
+        .register(this.userFormToRegisterRequest(this.registerForm))
+        .pipe(this.autoUnsubscribe())
+        .subscribe({
+          next: (value) => this.respondToAuthenticate(value),
+          error: (err) => this.hadleHttpError(err),
+        });
     }
   }
 
   onLogin() {
-    // if (this.loginForm.invalid) {
-    //   this.showFieldErrors(this.loginForm);
-    //   return;
-    // }
-    // if (this.loginForm.valid) {
-    //   this.loginService
-    //     .login(
-    //       this.loginForm.controls['login'].value,
-    //       this.loginForm.controls['password'].value,
-    //     )
-    //     .subscribe();
-    // }
-    {
-      this.router.navigate(['main-page']);
+    if (this.loginForm.invalid) {
+      this.showFieldErrors(this.loginForm);
+      return;
+    }
+    if (this.loginForm.valid) {
+      this.isLoading = true;
+      this.loginService
+        .login(
+          this.loginForm.controls['login'].value,
+          this.loginForm.controls['password'].value,
+        )
+        .pipe(this.autoUnsubscribe())
+        .subscribe({
+          next: (value) => this.respondToAuthenticate(value),
+          error: (err) => this.hadleHttpError(err),
+        });
     }
   }
 
-  private userFormToUser(userForm: FormGroup): User {
+  private respondToAuthenticate(value: AuthenticationResponse) {
+    this.router.navigate(['main-page']);
+    this.authService.setToken(value);
+  }
+
+  private userFormToRegisterRequest(userForm: FormGroup): RegisterRequest {
     return {
       login: userForm.controls['login'].value,
       password: userForm.controls['password'].value,

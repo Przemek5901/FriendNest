@@ -1,7 +1,14 @@
-import { MessageService } from 'primeng/api';
+import { Directive, OnDestroy } from '@angular/core';
 import { FormGroup } from '@angular/forms';
+import { Subject } from 'rxjs';
+import { takeUntil } from 'rxjs/operators';
+import { MessageService } from 'primeng/api';
+import { HttpErrorResponse } from '@angular/common/http';
 
-export abstract class FormErrorBase {
+@Directive()
+export abstract class BaseComponent implements OnDestroy {
+  private destroy$ = new Subject<void>();
+
   private fieldNames: { [key: string]: string } = {
     userName: 'Nazwa użytkownika',
     login: 'Login',
@@ -10,6 +17,10 @@ export abstract class FormErrorBase {
   };
 
   protected constructor(private messageService: MessageService) {}
+
+  protected autoUnsubscribe<T>() {
+    return takeUntil<T>(this.destroy$);
+  }
 
   protected showFieldErrors(form: FormGroup): void {
     Object.keys(form.controls).forEach((field) => {
@@ -38,5 +49,26 @@ export abstract class FormErrorBase {
         }
       }
     });
+  }
+
+  hadleHttpError(error: HttpErrorResponse): void {
+    if (error.error) {
+      this.messageService.add({
+        severity: 'error',
+        summary: 'Błąd',
+        detail: error.error.message,
+      });
+    } else {
+      this.messageService.add({
+        severity: 'error',
+        summary: 'Błąd',
+        detail: 'Nieznany błąd, skontaktuj się z administratorem',
+      });
+    }
+  }
+
+  ngOnDestroy(): void {
+    this.destroy$.next(undefined);
+    this.destroy$.complete();
   }
 }
