@@ -1,5 +1,6 @@
 package pl.polsl.friendnest.model;
 
+import com.fasterxml.jackson.annotation.JsonProperty;
 import jakarta.persistence.*;
 import lombok.*;
 import org.springframework.security.core.GrantedAuthority;
@@ -41,6 +42,7 @@ public class User implements UserDetails {
     @Column(name = "\"PROFILE_NAME\"", nullable = false, length = 30)
     private String profileName;
 
+    @JsonProperty("userName")
     @Column(name = "\"USER_NAME\"", nullable = false, length = 30)
     private String userName;
 

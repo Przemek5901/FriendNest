@@ -30,20 +30,23 @@ public class AuthentiacionService {
             throw new CustomException("Użytkownik o takim loginie już istnieje");
         }
 
+        String defaultProfileImage = "default/profile.png";
+        String defaultBackgroundImage = "default/background.png";
+
         var user = User.builder()
                 .userName(request.getUserName())
                 .login(request.getLogin())
                 .passwordHash(passwordEncoder.encode(request.getPassword()))
                 .gender(request.getGender())
                 .profileName(request.getUserName())
-                .profileImageUrl("zdj prof")
+                .profileImageUrl(defaultProfileImage)
                 .backgroundImageUrl("zdj back")
                 .createdAt(OffsetDateTime.now())
                 .updatedAt(OffsetDateTime.now()).build();
 
         userRepository.save(user);
         var jwtToken = jwtService.generateToken(user);
-        return AuthenticationResponse.builder().token(jwtToken).build();
+        return AuthenticationResponse.builder().token(jwtToken).user(user).build();
     }
 
     public AuthenticationResponse authenticate(AuthenticationRequest request) {
@@ -61,6 +64,6 @@ public class AuthentiacionService {
         var user = userRepository.findByLogin(request.getLogin())
                 .orElseThrow(() -> new CustomException("Nieprawidłowy login lub hasło"));
         var jwtToken = jwtService.generateToken(user);
-        return AuthenticationResponse.builder().token(jwtToken).build();
+        return AuthenticationResponse.builder().token(jwtToken).user(user).build();
     }
 }

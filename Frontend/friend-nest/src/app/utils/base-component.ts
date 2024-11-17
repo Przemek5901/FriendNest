@@ -4,6 +4,7 @@ import { Subject } from 'rxjs';
 import { takeUntil } from 'rxjs/operators';
 import { MessageService } from 'primeng/api';
 import { HttpErrorResponse } from '@angular/common/http';
+import { User } from '../models/User';
 
 @Directive()
 export abstract class BaseComponent implements OnDestroy {
@@ -65,6 +66,14 @@ export abstract class BaseComponent implements OnDestroy {
         detail: 'Nieznany błąd, skontaktuj się z administratorem',
       });
     }
+  }
+
+  getUser(): User {
+    const storedUser = localStorage.getItem('user');
+    if (storedUser) {
+      return JSON.parse(storedUser);
+    }
+    return {};
   }
 
   ngOnDestroy(): void {

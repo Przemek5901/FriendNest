@@ -23,6 +23,7 @@ public class SecurityConfiguration {
                 .csrf(AbstractHttpConfigurer::disable)
                 .authorizeHttpRequests(registry -> {
                     registry.requestMatchers("/api/auth/**").permitAll();
+                    registry.requestMatchers("/defaults/**").permitAll();
                     registry.anyRequest().authenticated();
                 })
                 // .formLogin(AbstractAuthenticationFilterConfigurer::permitAll)
