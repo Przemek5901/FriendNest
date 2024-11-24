@@ -2,7 +2,7 @@
   <p-toast />
   <div class="col-7 flex align-items-center justify-content-center">
     <div class="w-13rem">
-      <img ngSrc="assets/logo-big.png" style="max-width: 100%; height: auto;" alt="Logo" height="1065" width="2000">
+      <img ngSrc="../../../../assets/logo-big.png" style="max-width: 100%; height: auto;" alt="Logo" height="1065" width="2000">
     </div>
     <div>
       <p class="font-bold text-8xl vertical-align-top">
@@ -19,11 +19,13 @@
       <form [formGroup]="loginForm">
         <input type="text"  class="mb-2" pInputText placeholder="Login" formControlName="login"/>
         <input class="mb-3" type="password" pInputText placeholder="Hasło" formControlName="password"/>
-        <p-button label="Zaloguj się" class="top-button"
-                  [rounded]="true" [outlined]="true" (onClick)="onLogin()"/>
+        <div>
+          <p-button label="Zaloguj się" class="top-button"
+                    [rounded]="true" [outlined]="true" (click)="onLogin()"/>
+        </div>
       </form>
       <p class="font-light text-xl">Nie masz jeszcze konta?</p>
-      <p-button label="Zarejestruj" class="top-button" [rounded]="true" (onClick)="showDialog()"/>
+      <p-button label="Zarejestruj" class="top-button" [rounded]="true" (click)="showDialog()"/>
     </div>
   </div>
 </div>
@@ -69,6 +71,6 @@
       <p-button
         label="Zarejestruj"
         [text]="true"
-        (onClick)="onRegister()"/>
+        (click)="onRegister()"/>
   </ng-template>
 </p-dialog>

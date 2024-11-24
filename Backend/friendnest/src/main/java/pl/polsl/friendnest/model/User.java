@@ -22,7 +22,7 @@ public class User implements UserDetails {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     @Column(name = "\"USER_ID\"", nullable = false)
-    private Integer id;
+    private Integer userId;
 
     @Column(name = "\"LOGIN\"", nullable = false, length = 30)
     private String login;
@@ -51,6 +51,9 @@ public class User implements UserDetails {
 
     @Column(name = "\"BACKGROUND_IMAGE_URL\"", nullable = false)
     private String backgroundImageUrl;
+
+    @Column(name = "\"PROFILE_DESC\"")
+    private String profileDesc;
 
     @Column(name = "\"CREATED_AT\"", nullable = false)
     private OffsetDateTime createdAt;

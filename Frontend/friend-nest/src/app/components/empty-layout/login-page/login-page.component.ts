@@ -12,18 +12,19 @@ import { NgIf, NgOptimizedImage } from '@angular/common';
 import { DialogModule } from 'primeng/dialog';
 import { AvatarModule } from 'primeng/avatar';
 import { DropdownModule } from 'primeng/dropdown';
-import { Gender } from '../models/Gender';
-import { genderList } from '../costants/GenderList';
-import { MessageService } from 'primeng/api';
+import { Gender } from '../../../models/Gender';
+import { genderList } from '../../../costants/GenderList';
 import { RippleModule } from 'primeng/ripple';
 import { ToastModule } from 'primeng/toast';
-import { LoginService } from '../services/login.service';
-import { SpinnerComponent } from '../utils/spinner/spinner.component';
-import { AuthService } from '../services/auth.service';
-import { BaseComponent } from '../utils/base-component';
-import { RegisterRequest } from '../models/RegisterRequest';
+import { LoginService } from '../../../services/login.service';
+import { SpinnerComponent } from '../../../utils/spinner/spinner.component';
+import { AuthService } from '../../../services/auth.service';
+import { BaseComponent } from '../../../utils/base-component';
+import { RegisterRequest } from '../../../models/request/RegisterRequest';
 import { Router } from '@angular/router';
-import { AuthenticationResponse } from '../models/AuthenticationResponse';
+import { AuthenticationResponse } from '../../../models/response/AuthenticationResponse';
+import { MessageService } from 'primeng/api';
+import { InputTextareaModule } from 'primeng/inputtextarea';
 
 @Component({
   selector: 'app-login-page',
@@ -41,6 +42,7 @@ import { AuthenticationResponse } from '../models/AuthenticationResponse';
     RippleModule,
     NgIf,
     SpinnerComponent,
+    InputTextareaModule,
   ],
   providers: [MessageService],
   templateUrl: './login-page.component.html',
@@ -56,12 +58,11 @@ export class LoginPageComponent extends BaseComponent implements OnInit {
 
   constructor(
     private fb: FormBuilder,
-    messageService: MessageService,
     private router: Router,
     private loginService: LoginService,
     private authService: AuthService,
   ) {
-    super(messageService);
+    super();
     this.registerForm = this.fb.group({
       userName: ['', [Validators.required]],
       login: ['', [Validators.required]],

@@ -1,7 +1,9 @@
 import { Routes } from '@angular/router';
 
 import { AuthGuard } from './utils/auth-guard';
-import { LoginPageComponent } from './login-page/login-page.component';
+import { EmptyLayoutComponent } from './components/empty-layout/empty-layout.component';
+import { LoginPageComponent } from './components/empty-layout/login-page/login-page.component';
+import { MainLayoutComponent } from './components/main-layout/main-layout.component';
 
 export const routes: Routes = [
   {
@@ -10,21 +12,29 @@ export const routes: Routes = [
     pathMatch: 'full',
   },
   {
-    path: 'main-page',
-    loadComponent: () =>
-      import('./main-page/main-page.component').then(
-        (m) => m.MainPageComponent,
-      ),
-    canActivate: [AuthGuard],
+    path: '',
+    component: EmptyLayoutComponent,
+    children: [{ path: 'login', component: LoginPageComponent }],
   },
   {
-    path: 'profile',
-    loadComponent: () =>
-      import('./profile/profile.component').then((m) => m.ProfileComponent),
+    path: '',
+    component: MainLayoutComponent,
     canActivate: [AuthGuard],
-  },
-  {
-    path: 'login',
-    component: LoginPageComponent,
+    children: [
+      {
+        path: 'main-page',
+        loadComponent: () =>
+          import('./components/main-layout/main-page/main-page.component').then(
+            (m) => m.MainPageComponent,
+          ),
+      },
+      {
+        path: 'profile/:login',
+        loadComponent: () =>
+          import('./components/main-layout/profile/profile.component').then(
+            (m) => m.ProfileComponent,
+          ),
+      },
+    ],
   },
 ];

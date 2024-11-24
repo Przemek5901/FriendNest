@@ -1,0 +1,157 @@
+.card-container {
+  display: flex;
+  flex-direction: column;
+  min-height: 100vh;
+  border-left: 1px solid #9CA3AF;
+  border-right: 1px solid #9CA3AF;
+  overflow-x: hidden;
+}
+
+::ng-deep .pi{
+  font-size: 17px;
+  color: white;
+  font-weight: bold;
+}
+
+.profile-picture{
+  margin: 10px 0 0 20px;
+  border-radius: 50%;
+  border: 1px solid black;
+}
+
+.edit-button {
+  margin: 6rem 0 0 18rem !important;
+}
+
+::ng-deep {
+  .p-dialog {
+    background-color: black;
+    color: white;
+
+    &-header,
+    &-content,
+    &-footer {
+      background-color: black;
+      color: white;
+    }
+
+    width: 35rem;
+  }
+
+  .p-dropdown {
+    width: 20rem;
+  }
+
+  .p-tabview {
+    .p-tabview-nav li {
+      width: 19rem;
+
+      &.p-highlight .p-tabview-nav-link,
+      :not(.p-highlight):not(.p-disabled):hover .p-tabview-nav-link {
+        background-color: black;
+      }
+
+      .p-tabview-nav-link {
+        background-color: black;
+        border-radius: 0;
+        justify-content: center;
+        align-items: center;
+        color: white;
+        border-width: 0 0 4px 0;
+      }
+    }
+
+    .p-tabview-panels {
+      background-color: black;
+    }
+  }
+}
+
+
+.tab-view {
+  min-width: 607px;
+  width: 607px;
+}
+
+.image-container {
+  position: relative;
+  overflow: hidden;
+}
+
+.image {
+  position: relative;
+  background-position: center;
+  background-repeat: no-repeat;
+}
+
+.background-container {
+  width: 100%;
+  height: 250px;
+  z-index: 2;
+}
+
+.profile-picture-container {
+  width: 150px;
+  height: 150px;
+  border-radius: 50%;
+  border: 1px solid black;
+  z-index: 5;
+}
+
+.background-image,
+.profile-picture-image {
+  width: 100%;
+  height: 100%;
+  background-size: cover;
+  position: relative;
+}
+
+.image::after {
+  content: '';
+  position: absolute;
+  top: 0;
+  left: 0;
+  width: 100%;
+  height: 100%;
+  background-color: rgba(0, 0, 0, 0.3);
+  z-index: 1;
+  pointer-events: none;
+}
+
+.icon-button {
+  position: absolute;
+  cursor: pointer;
+  scale: 1.5;
+  transform: translate(-50%, -50%);
+  z-index: 2;
+}
+
+.background-container .icon-button {
+  top: 53%;
+  left: 53%;
+}
+
+.profile-picture-container .icon-button {
+  top: 84px;
+  left: 86px;
+}
+
+::ng-deep .icon-button .pi {
+  color: var(--primary-color);
+  font-size: 29px;
+}
+
+.file-input {
+  position: absolute;
+  top: 0;
+  left: 0;
+  width: 100%;
+  height: 100%;
+  opacity: 0;
+  cursor: pointer;
+  z-index: 1;
+}
+
+
+
+

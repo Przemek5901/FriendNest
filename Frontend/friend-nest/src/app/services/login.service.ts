@@ -1,8 +1,8 @@
 import { Injectable } from '@angular/core';
 import { delay, Observable } from 'rxjs';
 import { HttpClient } from '@angular/common/http';
-import { RegisterRequest } from '../models/RegisterRequest';
-import { AuthenticationResponse } from '../models/AuthenticationResponse';
+import { RegisterRequest } from '../models/request/RegisterRequest';
+import { AuthenticationResponse } from '../models/response/AuthenticationResponse';
 
 @Injectable({
   providedIn: 'root',
