@@ -22,4 +22,6 @@ export interface User {
   createdAt?: Date;
 
   updatedAt?: Date;
+
+  profileDesc?: string;
 }

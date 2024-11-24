@@ -1,4 +1,4 @@
-import { Directive, OnDestroy } from '@angular/core';
+import { Directive, inject, OnDestroy } from '@angular/core';
 import { FormGroup } from '@angular/forms';
 import { Subject } from 'rxjs';
 import { takeUntil } from 'rxjs/operators';
@@ -9,15 +9,15 @@ import { User } from '../models/User';
 @Directive()
 export abstract class BaseComponent implements OnDestroy {
   private destroy$ = new Subject<void>();
+  private messageService = inject(MessageService);
 
   private fieldNames: { [key: string]: string } = {
     userName: 'Nazwa użytkownika',
     login: 'Login',
     password: 'Hasło',
     gender: 'Płeć',
+    profileName: 'Nazwa profilu',
   };
-
-  protected constructor(private messageService: MessageService) {}
 
   protected autoUnsubscribe<T>() {
     return takeUntil<T>(this.destroy$);
@@ -53,7 +53,7 @@ export abstract class BaseComponent implements OnDestroy {
   }
 
   hadleHttpError(error: HttpErrorResponse): void {
-    if (error.error) {
+    if (error.error.message) {
       this.messageService.add({
         severity: 'error',
         summary: 'Błąd',

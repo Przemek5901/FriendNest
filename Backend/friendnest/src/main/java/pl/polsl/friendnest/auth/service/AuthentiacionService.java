@@ -30,8 +30,8 @@ public class AuthentiacionService {
             throw new CustomException("Użytkownik o takim loginie już istnieje");
         }
 
-        String defaultProfileImage = "default/profile.png";
-        String defaultBackgroundImage = "default/background.png";
+        String defaultProfileImage = "http://localhost:8080/defaults/profile.png";
+        String defaultBackgroundImage = "http://localhost:8080/default/background.png";
 
         var user = User.builder()
                 .userName(request.getUserName())
@@ -40,9 +40,10 @@ public class AuthentiacionService {
                 .gender(request.getGender())
                 .profileName(request.getUserName())
                 .profileImageUrl(defaultProfileImage)
-                .backgroundImageUrl("zdj back")
+                .backgroundImageUrl(defaultBackgroundImage)
                 .createdAt(OffsetDateTime.now())
-                .updatedAt(OffsetDateTime.now()).build();
+                .updatedAt(OffsetDateTime.now())
+                .profileDesc("").build();
 
         userRepository.save(user);
         var jwtToken = jwtService.generateToken(user);
