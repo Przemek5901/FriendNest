@@ -65,6 +65,11 @@
       background-color: black;
     }
   }
+
+  .icon-button .pi {
+    color: var(--primary-color);
+    font-size: 29px;
+  }
 }
 
 
@@ -134,11 +139,6 @@
 .profile-picture-container .icon-button {
   top: 84px;
   left: 86px;
-}
-
-::ng-deep .icon-button .pi {
-  color: var(--primary-color);
-  font-size: 29px;
 }
 
 .file-input {

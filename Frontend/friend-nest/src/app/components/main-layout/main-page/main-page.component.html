@@ -1,3 +1,60 @@
-<div class="grid min-h-screen">
-    <app-comment></app-comment>
+<div class="w-full card-container">
+  <p-toast></p-toast>
+  <p class="text-3xl ml-4 font-bold mt-2 mb-2">Dodaj post</p>
+  <div class=" grid mt-1 add-post">
+    <div class="col-2">
+      <img [ngSrc]="user.profileImageUrl ? user.profileImageUrl : 'http://localhost:8080/defaults/profile.png'"
+           alt="profile-picture" height="1065" style="max-width: 80%; height: auto;" width="2000">
+    </div>
+    <div class="col-9">
+      @if (post.imageBase64) {
+        <div class="mb-2 border-round-sm ml-3">
+          <div class="image-wrapper">
+            <p-image [src]="imageUrl ? imageUrl : ''"
+                     alt="Image"
+                     styleClass="custom-image"
+                     [preview]="true">
+            </p-image>
+            <p-button [rounded]="true" [text]="true"
+                      class="delete-button"
+                      icon="pi pi-times-circle"
+                      (click)="deletePhoto()">
+            </p-button>
+          </div>
+        </div>
+      }
+      <textarea
+        [(ngModel)]="post.content"
+        [placeholder]="post.imageBase64 ? 'Dodaj opis zdjęcia': 'Co słychać?'"
+        class="taPost"
+        cols="30"
+        maxlength="150"
+        pInputTextarea
+        rows="4">
+        </textarea>
+      <div class="flex mt-2">
+        <div>
+          <p-button (click)="emojiBar = !emojiBar" [rounded]="true" [text]="true" icon="pi pi-face-smile"/>
+          <p-button [rounded]="true" [text]="true" class="icon-button" icon="pi pi-image"><input
+            (change)="addPhoto($event)" accept="image/*"
+            class="file-input"
+            type="file"/>
+          </p-button>
+          <p-dropdown [options]="categories"
+                      [(ngModel)]="post.category"
+                      optionLabel="value"
+                      optionValue="code"
+                      class="category-dropdown"
+                      placeholder="Select a City" ></p-dropdown>
+        </div>
+        <div class="ml-auto">
+          <p-button [rounded]="true" class="full-button" [disabled]="isAddButtonDisabled()"
+                    label="Opublikuj wpis" (click)="addPost()"/>
+        </div>
+      </div>
+      @if (emojiBar) {
+        <emoji-mart class="emoji-bar" (emojiClick)="addEmoji($event)"></emoji-mart>
+      }
+    </div>
+  </div>
 </div>

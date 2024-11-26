@@ -16,8 +16,9 @@ import java.time.OffsetDateTime;
 @Table(name = "\"POST\"")
 public class Post {
     @Id
+    @GeneratedValue(strategy = GenerationType.IDENTITY)
     @Column(name = "\"POST_ID\"", nullable = false)
-    private Integer id;
+    private Integer postId;
 
     @ManyToOne(fetch = FetchType.LAZY, optional = false)
     @OnDelete(action = OnDeleteAction.SET_NULL)
