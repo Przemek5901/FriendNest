@@ -53,7 +53,7 @@ export abstract class BaseComponent implements OnDestroy {
   }
 
   hadleHttpError(error: HttpErrorResponse): void {
-    if (error.error.message) {
+    if (error?.error?.message) {
       this.messageService.add({
         severity: 'error',
         summary: 'Błąd',
@@ -66,6 +66,14 @@ export abstract class BaseComponent implements OnDestroy {
         detail: 'Nieznany błąd, skontaktuj się z administratorem',
       });
     }
+  }
+
+  openSuccessToast(message: string): void {
+    this.messageService.add({
+      severity: 'success',
+      summary: 'Sukces',
+      detail: message,
+    });
   }
 
   getUser(): User {

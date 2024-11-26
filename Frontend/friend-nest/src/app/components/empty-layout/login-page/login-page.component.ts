@@ -12,7 +12,7 @@ import { NgIf, NgOptimizedImage } from '@angular/common';
 import { DialogModule } from 'primeng/dialog';
 import { AvatarModule } from 'primeng/avatar';
 import { DropdownModule } from 'primeng/dropdown';
-import { Gender } from '../../../models/Gender';
+import { Dictionary } from '../../../models/Dictionary';
 import { genderList } from '../../../costants/GenderList';
 import { RippleModule } from 'primeng/ripple';
 import { ToastModule } from 'primeng/toast';
@@ -49,7 +49,7 @@ import { InputTextareaModule } from 'primeng/inputtextarea';
   styleUrl: './login-page.component.scss',
 })
 export class LoginPageComponent extends BaseComponent implements OnInit {
-  genders: Gender[] | undefined = genderList;
+  genders: Dictionary[] | undefined = genderList;
   visible: boolean = false;
   registerForm: FormGroup;
   loginForm: FormGroup;

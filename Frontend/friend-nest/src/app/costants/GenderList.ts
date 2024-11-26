@@ -1,6 +1,6 @@
-import { Gender } from '../models/Gender';
+import { Dictionary } from '../models/Dictionary';
 
-export const genderList: Gender[] = [
+export const genderList: Dictionary[] = [
   { value: 'Mężczyzna', code: 'M' },
   { value: 'Kobieta', code: 'F' },
   { value: 'Inna', code: 'O' },

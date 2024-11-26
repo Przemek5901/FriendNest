@@ -20,7 +20,7 @@ import { ProfileService } from '../../../services/profile.service';
 import { Profile } from '../../../models/Profile';
 import { TabViewModule } from 'primeng/tabview';
 import { FileUploadModule } from 'primeng/fileupload';
-import { Gender } from '../../../models/Gender';
+import { Dictionary } from '../../../models/Dictionary';
 import { genderList } from '../../../costants/GenderList';
 import { InputTextareaModule } from 'primeng/inputtextarea';
 import { ProfileRequest } from '../../../models/request/ProfileRequest';
@@ -54,7 +54,7 @@ import { ToastModule } from 'primeng/toast';
 export class ProfileComponent extends BaseComponent implements OnInit {
   user: User = this.getUser();
   profile: Profile = {};
-  genders: Gender[] = genderList;
+  genders: Dictionary[] = genderList;
   profileImageUrl: string | ArrayBuffer | null = '';
   backgroundImageUrl: string | ArrayBuffer | null = '';
 
@@ -165,7 +165,6 @@ export class ProfileComponent extends BaseComponent implements OnInit {
   }
 
   profileFormToProfileRequest(): ProfileRequest {
-    console.log(this.profile);
     return {
       userId: this.profile.user?.userId,
       profileImageBase64:
