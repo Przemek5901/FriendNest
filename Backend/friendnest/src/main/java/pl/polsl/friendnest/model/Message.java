@@ -17,7 +17,7 @@ import java.time.OffsetDateTime;
 public class Message {
     @Id
     @Column(name = "\"MESSAGE_ID\"", nullable = false)
-    private Integer id;
+    private Integer messageId;
 
     @ManyToOne(fetch = FetchType.LAZY, optional = false)
     @OnDelete(action = OnDeleteAction.CASCADE)

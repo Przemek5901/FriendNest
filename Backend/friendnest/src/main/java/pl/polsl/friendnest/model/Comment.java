@@ -17,7 +17,7 @@ import java.time.OffsetDateTime;
 public class Comment {
     @Id
     @Column(name = "\"COMMENT_ID\"", nullable = false)
-    private Integer id;
+    private Integer commentId;
 
     @ManyToOne(fetch = FetchType.LAZY)
     @OnDelete(action = OnDeleteAction.CASCADE)

@@ -1,107 +1,61 @@
-import { Component } from '@angular/core';
-import { CommentComponent } from './comment/comment.component';
+import { Component, OnInit } from '@angular/core';
 import { BaseComponent } from '../../../utils/base-component';
 import { User } from '../../../models/User';
-import { NgOptimizedImage } from '@angular/common';
-import { InputTextareaModule } from 'primeng/inputtextarea';
-import { PickerComponent } from '@ctrl/ngx-emoji-mart';
-import { Button } from 'primeng/button';
-import { FormsModule, ReactiveFormsModule } from '@angular/forms';
-import { SpinnerService } from '../../../services/spinner.service';
-import { AddPostRequest } from '../../../models/request/AddPostRequest';
-import { ImageModule } from 'primeng/image';
-import { DropdownModule } from 'primeng/dropdown';
+import { PostService } from '../../../services/post.service';
+import { ToastModule } from 'primeng/toast';
+import { AddPostComponent } from './add-post/add-post.component';
+import { PostComponent } from './post/post.component';
+import { PostTo } from '../../../models/response/PostTo';
+import { Observable } from 'rxjs';
+import { AsyncPipe } from '@angular/common';
 import { Dictionary } from '../../../models/Dictionary';
 import { categoryList } from '../../../costants/CategoryList';
-import { PostService } from '../../../services/post.service';
-import { Post } from '../../../models/Post';
-import { ToastModule } from 'primeng/toast';
+import { DropdownModule } from 'primeng/dropdown';
+import { sortOptions } from '../../../costants/SortOptions';
+import { GetPostsRequest } from '../../../models/request/GetPostsRequest';
+import { FormsModule } from '@angular/forms';
 
 @Component({
   selector: 'app-main-page',
   standalone: true,
   imports: [
-    CommentComponent,
-    NgOptimizedImage,
-    InputTextareaModule,
-    PickerComponent,
-    Button,
-    ReactiveFormsModule,
-    FormsModule,
-    ImageModule,
-    DropdownModule,
     ToastModule,
+    AddPostComponent,
+    PostComponent,
+    AsyncPipe,
+    DropdownModule,
+    FormsModule,
   ],
   templateUrl: './main-page.component.html',
   styleUrl: './main-page.component.scss',
 })
-export class MainPageComponent extends BaseComponent {
+export class MainPageComponent extends BaseComponent implements OnInit {
   user: User = this.getUser();
-  emojiBar: boolean = false;
-  imageUrl: string | ArrayBuffer | null = '';
-  post: AddPostRequest = {
-    content: '',
+  posts$!: Observable<PostTo[]>;
+  getPostsRequest: GetPostsRequest = {
+    userId: this.user.userId,
     category: '0',
+    sortOption: '1',
   };
-  categories: Dictionary[] = categoryList;
 
-  constructor(
-    private spinnerService: SpinnerService,
-    private postService: PostService,
-  ) {
+  categories: Dictionary[] = categoryList;
+  sortOptions: Dictionary[] = sortOptions;
+
+  constructor(private postService: PostService) {
     super();
   }
 
-  addEmoji(event: any) {
-    if (this.post.content.length < 150) {
-      this.post.content = this.post.content + event.emoji.native;
+  ngOnInit() {
+    this.getPosts();
+  }
+
+  getPosts() {
+    if (this.getPostsRequest.userId) {
+      this.posts$ = this.postService
+        .getPostsExceptUser(this.getPostsRequest)
+        .pipe(this.autoUnsubscribe());
     }
   }
 
-  addPhoto(event: Event) {
-    const input = event.target as HTMLInputElement;
-
-    if (input.files && input.files[0]) {
-      this.spinnerService.show();
-      const file = input.files[0];
-      const reader = new FileReader();
-
-      reader.onload = () => {
-        this.imageUrl = reader.result;
-        this.post.imageBase64 = reader.result as string;
-        this.spinnerService.hide();
-      };
-
-      reader.readAsDataURL(file);
-    }
-  }
-
-  deletePhoto() {
-    this.imageUrl = '';
-    this.post.imageBase64 = '';
-  }
-
-  addPost(): void {
-    this.post.userId = this.user.userId;
-    this.postService
-      .addPost(this.post)
-      .pipe(this.autoUnsubscribe())
-      .subscribe({
-        next: (value) => this.respondToAddPost(value),
-        error: (error) => this.hadleHttpError(error),
-      });
-  }
-
-  private respondToAddPost(post: Post): void {
-    this.post.content = '';
-    this.post.imageBase64 = '';
-    this.openSuccessToast('Dodano post');
-  }
-
-  isAddButtonDisabled(): boolean {
-    return (
-      (!this.post.content || this.post.content.trim() === '') &&
-      !this.post.imageBase64
-    );
-  }
+  openPost() {}
 }

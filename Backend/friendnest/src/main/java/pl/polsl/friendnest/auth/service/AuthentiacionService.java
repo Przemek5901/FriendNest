@@ -31,7 +31,7 @@ public class AuthentiacionService {
         }
 
         String defaultProfileImage = "http://localhost:8080/defaults/profile.png";
-        String defaultBackgroundImage = "http://localhost:8080/default/background.png";
+        String defaultBackgroundImage = "http://localhost:8080/defaults/background.png";
 
         var user = User.builder()
                 .userName(request.getUserName())
