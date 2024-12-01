@@ -26,6 +26,7 @@ public class SecurityConfiguration {
                 .authorizeHttpRequests(registry -> {
                     registry.requestMatchers("/api/auth/**").permitAll();
                     registry.requestMatchers("/defaults/**").permitAll();
+                    registry.requestMatchers("/posts/**").permitAll();
                     registry.requestMatchers("/profile-pictures/**").permitAll();
                     registry.requestMatchers("/background-pictures/**").permitAll();
                     registry.anyRequest().authenticated();

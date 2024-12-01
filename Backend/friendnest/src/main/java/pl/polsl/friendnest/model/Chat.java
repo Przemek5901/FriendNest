@@ -17,7 +17,7 @@ import java.time.OffsetDateTime;
 public class Chat {
     @Id
     @Column(name = "\"CHAT_ID\"", nullable = false)
-    private Integer id;
+    private Integer chatId;
 
     @ManyToOne(fetch = FetchType.LAZY, optional = false)
     @OnDelete(action = OnDeleteAction.CASCADE)

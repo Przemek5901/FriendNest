@@ -9,7 +9,7 @@ import { User } from '../models/User';
 @Directive()
 export abstract class BaseComponent implements OnDestroy {
   private destroy$ = new Subject<void>();
-  private messageService = inject(MessageService);
+  protected messageService = inject(MessageService);
 
   private fieldNames: { [key: string]: string } = {
     userName: 'Nazwa użytkownika',

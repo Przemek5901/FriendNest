@@ -1,11 +1,13 @@
 package pl.polsl.friendnest.model;
 
+import com.fasterxml.jackson.annotation.JsonIgnore;
 import jakarta.persistence.*;
 import lombok.*;
 import org.hibernate.annotations.OnDelete;
 import org.hibernate.annotations.OnDeleteAction;
 
 import java.time.OffsetDateTime;
+import java.util.List;
 
 @Getter
 @Setter
@@ -20,7 +22,7 @@ public class Post {
     @Column(name = "\"POST_ID\"", nullable = false)
     private Integer postId;
 
-    @ManyToOne(fetch = FetchType.LAZY, optional = false)
+    @ManyToOne(fetch = FetchType.EAGER, optional = false)
     @OnDelete(action = OnDeleteAction.SET_NULL)
     @JoinColumn(name = "\"USER_ID\"", nullable = false)
     private User user;
@@ -36,5 +38,10 @@ public class Post {
 
     @Column(name = "\"CREATED_AT\"", nullable = false)
     private OffsetDateTime createdAt;
+
+    @OneToMany(mappedBy = "post", fetch = FetchType.LAZY, cascade = CascadeType.ALL)
+    @JsonIgnore
+    private List<Interaction> interactions;
+
 
 }

@@ -17,14 +17,14 @@ public class ProfileController {
     private final ProfileService profileService;
 
     @PostMapping("/getProfile")
-    public ResponseEntity<Profile> register(@RequestBody Map<String, String> payload) {
+    public ResponseEntity<Profile> getProfile(@RequestBody Map<String, String> payload) {
         String login = payload.get("login");
         return ResponseEntity.ok(profileService.getProfile(login));
 
     }
 
     @PostMapping("/editProfile")
-    public ResponseEntity<Profile> register(@RequestBody ProfileRequest profileRequest) {
+    public ResponseEntity<Profile> editProfile(@RequestBody ProfileRequest profileRequest) {
         return ResponseEntity.ok(profileService.editProfile(profileRequest));
 
     }
