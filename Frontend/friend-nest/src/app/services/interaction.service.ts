@@ -2,7 +2,7 @@ import { Injectable } from '@angular/core';
 import { HttpClient } from '@angular/common/http';
 import { AddInteracionRequest } from '../models/request/AddInteracionRequest';
 import { Observable } from 'rxjs';
-import { UserInteractionsToPost } from '../models/response/UserInteractionsToPost';
+import { UserInteractions } from '../models/response/UserInteractionsToPost';
 
 @Injectable({
   providedIn: 'root',
@@ -10,10 +10,8 @@ import { UserInteractionsToPost } from '../models/response/UserInteractionsToPos
 export class InteractionService {
   constructor(private http: HttpClient) {}
 
-  addInteraction(
-    request: AddInteracionRequest,
-  ): Observable<UserInteractionsToPost> {
-    return this.http.post<UserInteractionsToPost>(
+  addInteraction(request: AddInteracionRequest): Observable<UserInteractions> {
+    return this.http.post<UserInteractions>(
       'http://localhost:8080/api/addInteraction',
       request,
     );

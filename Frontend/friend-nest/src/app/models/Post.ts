@@ -1,7 +1,7 @@
 import { User } from './User';
 
 export interface Post {
-  postId?: number;
+  postId: number;
   userId?: number;
   content?: string;
   imageUrl?: string;

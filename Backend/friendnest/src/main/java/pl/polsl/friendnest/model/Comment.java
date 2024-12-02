@@ -1,5 +1,6 @@
 package pl.polsl.friendnest.model;
 
+import com.fasterxml.jackson.annotation.JsonIgnore;
 import jakarta.persistence.*;
 import lombok.*;
 import org.hibernate.annotations.OnDelete;
@@ -17,9 +18,10 @@ import java.time.OffsetDateTime;
 public class Comment {
     @Id
     @Column(name = "\"COMMENT_ID\"", nullable = false)
+    @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Integer commentId;
 
-    @ManyToOne(fetch = FetchType.LAZY)
+    @ManyToOne(fetch = FetchType.EAGER)
     @OnDelete(action = OnDeleteAction.CASCADE)
     @JoinColumn(name = "\"POST_ID\"")
     private Post post;

@@ -1,6 +1,7 @@
 <div class="w-full card-container">
   <p-toast></p-toast>
   <div>
+    <p class="text-3xl ml-4 font-bold mt-2 mb-2">Dodaj post</p>
     <app-add-post></app-add-post>
   </div>
   <div class="h-3rem sort-container mt-2 grid">
@@ -28,7 +29,7 @@
   <div>
     @if (posts$ | async; as posts) {
       @for (post of posts; track post) {
-        <div class="post" (click)="openPost()">
+        <div class="post" (click)="openPost(post)">
           <app-post [postTo]="post"></app-post>
         </div>
       }

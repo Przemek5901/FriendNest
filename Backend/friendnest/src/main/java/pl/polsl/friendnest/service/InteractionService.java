@@ -1,13 +1,14 @@
 package pl.polsl.friendnest.service;
 
+import pl.polsl.friendnest.model.Comment;
 import pl.polsl.friendnest.model.Post;
 import pl.polsl.friendnest.model.User;
 import pl.polsl.friendnest.model.request.AddInteractionRequest;
-import pl.polsl.friendnest.model.response.UserInteractionsToPost;
+import pl.polsl.friendnest.model.response.UserInteractions;
 
 public interface InteractionService {
 
-    UserInteractionsToPost addInteraction(AddInteractionRequest interactionRequest);
+    UserInteractions addInteraction(AddInteractionRequest interactionRequest);
 
-    UserInteractionsToPost getUserInteractionsToPost(User user, Post post);
+    UserInteractions getUserInteractions(User user, Comment comment, Post post);
 }

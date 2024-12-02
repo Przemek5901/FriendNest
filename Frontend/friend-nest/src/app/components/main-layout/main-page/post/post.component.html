@@ -13,8 +13,8 @@
     </div>
     <div class="block mt-2">
       @if(postTo.post.imageUrl) {
-        <div class="mt-3 mb-3 border-round-xl">
-          <p-image [src]="postTo.post.imageUrl" [preview]="true" width="460"></p-image>
+        <div class="mt-3 mb-3 border-round-xl max-h-30rem overflow-hidden">
+          <p-image [src]="postTo.post.imageUrl" [preview]="true" width="460"  (click)="$event.stopPropagation()"></p-image>
         </div>
       }
       <span>{{postTo.post.content}}</span>
@@ -24,56 +24,56 @@
         icon='pi pi-comment'
         [rounded]="true"
         [text]="true"
-        [ngClass]="postTo.userInteractionsToPost.isCommented ? 'activated-button' : 'default-button'"
+        [ngClass]="postTo.userInteractions.isCommented ? 'activated-button' : 'default-button'"
         [disabled]="buttonStates[1].disabled"
-        (click)="toggleButton(1)">
+        (click)="openPost()">
       </p-button>
 
-      <span class="text-400 interaction-number">{{postTo.userInteractionsToPost.commentsNumber}}</span>
+      <span class="text-400 interaction-number">{{postTo.userInteractions.commentsNumber}}</span>
 
       <p-button
-        [icon]="postTo.userInteractionsToPost.isLiked ? 'pi pi-thumbs-up-fill' : 'pi pi-thumbs-up'"
+        [icon]="postTo.userInteractions.isLiked ? 'pi pi-thumbs-up-fill' : 'pi pi-thumbs-up'"
         [rounded]="true"
         [text]="true"
-        [ngClass]="postTo.userInteractionsToPost.isLiked ? 'activated-button' : 'default-button'"
-        [disabled]="buttonStates[2].disabled || postTo.userInteractionsToPost.isDisliked "
-        (click)="toggleButton(2)">
+        [ngClass]="postTo.userInteractions.isLiked ? 'activated-button' : 'default-button'"
+        [disabled]="buttonStates[2].disabled || postTo.userInteractions.isDisliked "
+        (click)="toggleButton(2, $event)">
       </p-button>
 
-      <span class="text-400 interaction-number">{{postTo.userInteractionsToPost.likesNumber}}</span>
+      <span class="text-400 interaction-number">{{postTo.userInteractions.likesNumber}}</span>
 
       <p-button
-        [icon]="postTo.userInteractionsToPost.isDisliked ? 'pi pi-thumbs-down-fill' : 'pi pi-thumbs-up'"
+        [icon]="postTo.userInteractions.isDisliked ? 'pi pi-thumbs-down-fill' : 'pi pi-thumbs-up'"
         [rounded]="true"
         [text]="true"
-        [ngClass]="postTo.userInteractionsToPost.isDisliked ? 'activated-button' : 'default-button'"
-        [disabled]="buttonStates[3].disabled || postTo.userInteractionsToPost.isLiked"
-        (click)="toggleButton(3)">
+        [ngClass]="postTo.userInteractions.isDisliked ? 'activated-button' : 'default-button'"
+        [disabled]="buttonStates[3].disabled || postTo.userInteractions.isLiked"
+        (click)="toggleButton(3, $event)">
       </p-button>
 
-      <span class="text-400 interaction-number">{{postTo.userInteractionsToPost.dislikesNumber}}</span>
+      <span class="text-400 interaction-number">{{postTo.userInteractions.dislikesNumber}}</span>
 
       <p-button
         icon='pi pi-sync'
         [rounded]="true"
         [text]="true"
-        [ngClass]="postTo.userInteractionsToPost.isReposted ? 'activated-button' : 'default-button'"
+        [ngClass]="postTo.userInteractions.isReposted ? 'activated-button' : 'default-button'"
         [disabled]="buttonStates[4].disabled"
-        (click)="toggleButton(4)">
+        (click)="toggleButton(4, $event)">
       </p-button>
 
-      <span class="text-400 interaction-number">{{postTo.userInteractionsToPost.repostsNumber}}</span>
+      <span class="text-400 interaction-number">{{postTo.userInteractions.repostsNumber}}</span>
 
       <p-button
         icon='pi pi-pencil'
         [rounded]="true"
         [text]="true"
-        [ngClass]="postTo.userInteractionsToPost.isQuoted ? 'activated-button' : 'default-button'"
+        [ngClass]="postTo.userInteractions.isQuoted ? 'activated-button' : 'default-button'"
         [disabled]="buttonStates[5].disabled"
-        (click)="toggleButton(5)">
+        (click)="toggleButton(5, $event)">
       </p-button>
 
-      <span class="text-400 interaction-number">{{postTo.userInteractionsToPost.quotesNumber}}</span>
+      <span class="text-400 interaction-number">{{postTo.userInteractions.quotesNumber}}</span>
 
     </div>
   </div>

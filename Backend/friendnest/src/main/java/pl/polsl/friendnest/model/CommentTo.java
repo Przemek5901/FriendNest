@@ -8,7 +8,7 @@ import pl.polsl.friendnest.model.response.UserInteractions;
 @Setter
 @Builder
 @AllArgsConstructor
-public class PostTo {
-    private Post post;
+public class CommentTo {
+    private Comment comment;
     private UserInteractions userInteractions;
 }

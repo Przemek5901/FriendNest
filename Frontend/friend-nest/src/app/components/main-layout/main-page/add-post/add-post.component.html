@@ -1,4 +1,3 @@
-<p class="text-3xl ml-4 font-bold mt-2 mb-2">Dodaj post</p>
 <div class=" grid mt-1 add-post">
   <div class="col-2">
     <div class="image-container ml-1">
@@ -26,7 +25,7 @@
     }
     <textarea
       [(ngModel)]="post.content"
-      [placeholder]="post.imageBase64 ? 'Dodaj opis zdjęcia': 'Co słychać?'"
+      [placeholder]="post.imageBase64 ? 'Dodaj opis zdjęcia': (isComment ? 'Skomentuj' : 'Co słychać?')"
       class="taPost"
       cols="30"
       maxlength="150"
@@ -41,20 +40,22 @@
           class="file-input"
           type="file"/>
         </p-button>
-        <p-dropdown [options]="categories"
-                    [(ngModel)]="post.category"
-                    optionLabel="value"
-                    optionValue="code"
-                    class="category-dropdown"
-                    placeholder="Select a City" ></p-dropdown>
+          @if(!isComment) {
+              <p-dropdown [options]="categories"
+                          [(ngModel)]="post.category"
+                          optionLabel="value"
+                          optionValue="code"
+                          class="category-dropdown"
+                          placeholder="Select a City" ></p-dropdown>
+          }
       </div>
       <div class="ml-auto">
         <p-button [rounded]="true" class="full-button" [disabled]="isAddButtonDisabled()"
-                  label="Opublikuj wpis" (click)="addPost()"/>
+                  [label]="isComment ? 'Dodaj komentarz':  'Opublikuj wpis'" (click)=" isComment ? addComment() : addPost()"/>
       </div>
     </div>
     @if (emojiBar) {
-      <emoji-mart class="emoji-bar" (emojiClick)="addEmoji($event)"></emoji-mart>
+      <emoji-mart class="emoji-bar" (emojiClick)="addEmoji($event)" set="apple" [perLine]="7" [hideObsolete]="true"></emoji-mart>
     }
   </div>
 </div>

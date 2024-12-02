@@ -1,4 +1,4 @@
-export interface UserInteractionsToPost {
+export interface UserInteractions {
   commentsNumber: number;
   likesNumber: number;
   dislikesNumber: number;

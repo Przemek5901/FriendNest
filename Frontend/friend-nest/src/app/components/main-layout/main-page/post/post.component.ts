@@ -7,8 +7,8 @@ import { ImageModule } from 'primeng/image';
 import { InteractionService } from '../../../../services/interaction.service';
 import { AddInteracionRequest } from '../../../../models/request/AddInteracionRequest';
 import { PostTo } from '../../../../models/response/PostTo';
-import { UserInteractionsToPost } from '../../../../models/response/UserInteractionsToPost';
-import { MessageService } from 'primeng/api';
+import { UserInteractions } from '../../../../models/response/UserInteractionsToPost';
+import { Router } from '@angular/router';
 
 @Component({
   selector: 'app-post',
@@ -19,6 +19,7 @@ import { MessageService } from 'primeng/api';
 })
 export class PostComponent extends BaseComponent {
   private _postTo!: PostTo;
+  private _commentId!: number;
   buttonStates: {
     [key: number]: { disabled: boolean };
   } = {
@@ -33,9 +34,17 @@ export class PostComponent extends BaseComponent {
 
   constructor(
     private interactionService: InteractionService,
-    override messageService: MessageService,
+    private router: Router,
   ) {
     super();
+  }
+
+  @Input() set commentId(value: number) {
+    this._commentId = value;
+  }
+
+  get commentId(): number {
+    return this._commentId;
   }
 
   @Input() set postTo(value: PostTo) {
@@ -46,11 +55,12 @@ export class PostComponent extends BaseComponent {
     return this._postTo;
   }
 
-  toggleButton(button: number) {
+  toggleButton(button: number, event: MouseEvent) {
+    event.stopPropagation();
     const interaction: AddInteracionRequest = {
       userId: this.user.userId,
       postId: this.postTo.post.postId,
-      commentId: null,
+      commentId: this._commentId ? this._commentId : null,
       reactionType: button,
     };
 
@@ -63,20 +73,20 @@ export class PostComponent extends BaseComponent {
       });
   }
 
+  openPost(): void {
+    this.router.navigate(['post', this.postTo.post.postId]);
+  }
+
   private respondToAddReaction(
     button: number,
-    interaction: UserInteractionsToPost,
+    interaction: UserInteractions,
   ): void {
     const buttonState = this.buttonStates[button];
     buttonState.disabled = true;
     if (button === 4 && interaction.isReposted) {
-      this.messageService.add({
-        severity: 'success',
-        summary: 'Sukces',
-        detail: `Podano post dalej!`,
-      });
+      this.openSuccessToast(`Podano post dalej!`);
     }
-    this._postTo.userInteractionsToPost = interaction;
+    this.postTo.userInteractions = interaction;
     setTimeout(() => {
       buttonState.disabled = false;
     }, 1000);

@@ -1,5 +1,6 @@
 package pl.polsl.friendnest.service.impl;
 
+import org.springframework.security.core.parameters.P;
 import org.springframework.stereotype.Service;
 import pl.polsl.friendnest.exception.CustomException;
 import pl.polsl.friendnest.model.Comment;
@@ -7,7 +8,7 @@ import pl.polsl.friendnest.model.Interaction;
 import pl.polsl.friendnest.model.Post;
 import pl.polsl.friendnest.model.User;
 import pl.polsl.friendnest.model.request.AddInteractionRequest;
-import pl.polsl.friendnest.model.response.UserInteractionsToPost;
+import pl.polsl.friendnest.model.response.UserInteractions;
 import pl.polsl.friendnest.repository.CommentRepository;
 import pl.polsl.friendnest.repository.InteractionRepository;
 import pl.polsl.friendnest.repository.PostRepository;
@@ -34,17 +35,17 @@ public class InteractionServiceImpl implements InteractionService {
 
 
     @Override
-    public UserInteractionsToPost addInteraction(AddInteractionRequest interactionRequest) {
+    public UserInteractions addInteraction(AddInteractionRequest interactionRequest) {
         if (interactionRequest.getUserId() == null || interactionRequest.getPostId() == null ||
                 interactionRequest.getReactionType() == null) {
-            throw new CustomException("Błąd, skontaktuj się z administratorem");
+            throw new CustomException();
         }
 
         User user = userRepository.findByUserId(interactionRequest.getUserId())
-                .orElseThrow(() -> new CustomException("Błąd, skontaktuj się z administratorem"));
+                .orElseThrow(CustomException::new);
 
         Post post = postRepository.findPostByPostId(interactionRequest.getPostId())
-                .orElseThrow(() -> new CustomException("Błąd, skontaktuj się z administratorem"));
+                .orElseThrow(CustomException::new);
 
         var interaction = Interaction.builder().user(user)
                 .post(post)
@@ -52,9 +53,10 @@ public class InteractionServiceImpl implements InteractionService {
                 .createdAt(OffsetDateTime.now())
                 .build();
 
+        Comment comment = new Comment();
         if (interactionRequest.getCommentId() != null) {
-            Comment comment = commentRepository.findCommentByCommentId(interactionRequest.getCommentId())
-                    .orElseThrow(() -> new CustomException("Błąd, skontaktuj się z administratorem"));
+            comment = commentRepository.findCommentByCommentId(interactionRequest.getCommentId())
+                    .orElseThrow(CustomException::new);
 
             interaction.setComment(comment);
         }
@@ -69,27 +71,32 @@ public class InteractionServiceImpl implements InteractionService {
             interactionRepository.save(interaction);
         }
 
-        return getUserInteractionsToPost(user, post);
+        if(interactionRequest.getCommentId() != null) {
+            return getUserInteractions(user, comment ,post);
+        }
+        return getUserInteractions(user, null,post);
+
+
 
     }
 
-    public UserInteractionsToPost getUserInteractionsToPost(User user, Post post) {
+    @Override
+    public UserInteractions getUserInteractions(User user, Comment comment, Post post) {
         if(user == null || post == null) {
-            throw new CustomException("Wystąpił błąd, skontakuj się z administratorem");
+            throw new CustomException();
         }
 
-        return UserInteractionsToPost.builder()
-                .commentsNumber(interactionRepository.countAllByPostAndInteractionType(post, 1))
-                .likesNumber(interactionRepository.countAllByPostAndInteractionType(post, 2))
-                .dislikesNumber(interactionRepository.countAllByPostAndInteractionType(post, 3))
-                .repostsNumber(interactionRepository.countAllByPostAndInteractionType(post, 4))
-                .quotesNumber(interactionRepository.countAllByPostAndInteractionType(post, 5))
-                .isCommented(interactionRepository.existsAllByUserAndPostAndAndInteractionType(user, post, 1))
-                .isLiked(interactionRepository.existsAllByUserAndPostAndAndInteractionType(user, post, 2))
-                .isDisliked(interactionRepository.existsAllByUserAndPostAndAndInteractionType(user, post, 3))
-                .isReposted(interactionRepository.existsAllByUserAndPostAndAndInteractionType(user, post, 4))
-                .isQuoted(interactionRepository.existsAllByUserAndPostAndAndInteractionType(user, post, 5))
+        return UserInteractions.builder()
+                .commentsNumber(comment == null ? commentRepository.countByPost(post) : 0)
+                .likesNumber(interactionRepository.countAllByPostAndInteractionTypeAndComment(post, 2, comment))
+                .dislikesNumber(interactionRepository.countAllByPostAndInteractionTypeAndComment(post, 3, comment))
+                .repostsNumber(interactionRepository.countAllByPostAndInteractionTypeAndComment(post, 4, comment))
+                .quotesNumber(interactionRepository.countAllByPostAndInteractionTypeAndComment(post, 5, comment))
+                .isCommented(interactionRepository.existsAllByUserAndPostAndAndInteractionTypeAndComment(user, post, 1, comment))
+                .isLiked(interactionRepository.existsAllByUserAndPostAndAndInteractionTypeAndComment(user, post, 2, comment))
+                .isDisliked(interactionRepository.existsAllByUserAndPostAndAndInteractionTypeAndComment(user, post, 3, comment))
+                .isReposted(interactionRepository.existsAllByUserAndPostAndAndInteractionTypeAndComment(user, post, 4, comment))
+                .isQuoted(interactionRepository.existsAllByUserAndPostAndAndInteractionTypeAndComment(user, post, 5, comment))
                 .build();
-
     }
 }

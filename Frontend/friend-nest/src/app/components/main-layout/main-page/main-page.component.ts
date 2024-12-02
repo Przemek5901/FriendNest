@@ -14,6 +14,7 @@ import { DropdownModule } from 'primeng/dropdown';
 import { sortOptions } from '../../../costants/SortOptions';
 import { GetPostsRequest } from '../../../models/request/GetPostsRequest';
 import { FormsModule } from '@angular/forms';
+import { Router } from '@angular/router';
 
 @Component({
   selector: 'app-main-page',
@@ -41,7 +42,10 @@ export class MainPageComponent extends BaseComponent implements OnInit {
   categories: Dictionary[] = categoryList;
   sortOptions: Dictionary[] = sortOptions;
 
-  constructor(private postService: PostService) {
+  constructor(
+    private postService: PostService,
+    private router: Router,
+  ) {
     super();
   }
 
@@ -57,5 +61,7 @@ export class MainPageComponent extends BaseComponent implements OnInit {
     }
   }
 
-  openPost() {}
+  openPost(postTo: PostTo): void {
+    this.router.navigate(['post', postTo.post.postId]);
+  }
 }

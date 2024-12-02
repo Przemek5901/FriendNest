@@ -2,6 +2,8 @@ package pl.polsl.friendnest.repository;
 
 import io.micrometer.common.lang.Nullable;
 import org.springframework.data.jpa.repository.JpaRepository;
+import org.springframework.data.jpa.repository.Query;
+import org.springframework.data.repository.query.Param;
 import pl.polsl.friendnest.model.Comment;
 import pl.polsl.friendnest.model.Interaction;
 import pl.polsl.friendnest.model.Post;
@@ -17,8 +19,10 @@ public interface InteractionRepository extends JpaRepository<Interaction, Intege
     Optional<Interaction> findByUserAndPostAndInteractionTypeAndComment(
             User user, Post post, Integer interactionType, @Nullable Comment comment);
 
-    Integer countAllByPostAndInteractionType(Post post, Integer interactionId);
+    Integer countAllByPostAndInteractionTypeAndComment(Post post, Integer interactionId, Comment comment);
+    //Integer countAllByPostAndInteractionTypeAndComment(Post post, Integer interactionId, Comment comment);
 
-    boolean existsAllByUserAndPostAndAndInteractionType(User user, Post post, Integer interactionId);
+    //boolean existsAllByUserAndPostAndAndInteractionType(User user, Post post, Integer interactionId);
+    boolean existsAllByUserAndPostAndAndInteractionTypeAndComment(User user, Post post, Integer interactionId, Comment comment);
 
 }
