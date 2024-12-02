@@ -9,7 +9,7 @@ import lombok.*;
 @Setter
 @Builder
 @AllArgsConstructor
-public class UserInteractionsToPost {
+public class UserInteractions {
 
     private Integer commentsNumber;
     private Integer likesNumber;

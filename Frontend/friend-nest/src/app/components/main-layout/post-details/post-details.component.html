@@ -1,0 +1,112 @@
+<div class="w-full card-container">
+  <p-toast></p-toast>
+  <div class="h-3rem back-container sticky top-0 z-5">
+    <div class="flex">
+      <div>
+        <p-button (click)="goBack()" [rounded]="true" [text]="true" class="arrow" icon="pi pi-arrow-left"></p-button>
+      </div>
+      <div class="ml-1 back-text">
+        <span class="text-xl font-bold -mt-6">Powrót</span>
+      </div>
+    </div>
+  </div>
+  <div>
+    <div class="grid">
+      <div class="col-2 mt-2">
+        <div class="image-container ml-1">
+          <img
+            [ngSrc]="postDetails.postTo.post.user.profileImageUrl ? postDetails.postTo.post.user.profileImageUrl : 'http://localhost:8080/defaults/profile.png'"
+            height="80"
+            width="80">
+        </div>
+      </div>
+      <div class="col-7">
+        <div class="block mt-3">
+          <p class="text-2xl font-bold mt-2">{{ postDetails.postTo.post.user.profileName }}</p>
+          <p class="text-xl text-400 ml-1 -mt-3">{{ '@' + postDetails.postTo.post.user.login }}</p>
+        </div>
+      </div>
+      @if(postDetails.postTo.post.userId === user.userId){
+        <div class="col-3 mt-3" >
+          <p-button label="Usuń post" [outlined]="true" severity="danger" (click)="deltePost()"/>
+        </div>
+      }
+    </div>
+    <div class="block ml-5 mr-5">
+      @if (postDetails.postTo.post.imageUrl) {
+        <div class="mb-3 border-round-xl">
+          <p-image [src]="postDetails.postTo.post.imageUrl" [preview]="true" width="545"
+                   (click)="$event.stopPropagation()"></p-image>
+        </div>
+      }
+      <span>{{ postDetails.postTo.post.content }}</span>
+    </div>
+    <hr class="ml-3 mr-3 mt-3">
+    <div class="block h-3rem justify-content-between flex mt-1 flex align-items-center justify-content-center mr-6 ml-5">
+      <p-button
+        (click)="toggleButton(1)"
+        [disabled]="true"
+        [ngClass]="postDetails.postTo.userInteractions.isCommented ? 'activated-button' : 'default-button'"
+        [rounded]="true"
+        [text]="true"
+        icon='pi pi-comment'>
+      </p-button>
+
+      <span class="text-400 interaction-number">{{ postDetails.postTo.userInteractions.commentsNumber }}</span>
+
+      <p-button
+        (click)="toggleButton(2)"
+        [disabled]="buttonStates[2].disabled || postDetails.postTo.userInteractions.isDisliked "
+        [icon]="postDetails.postTo.userInteractions.isLiked ? 'pi pi-thumbs-up-fill' : 'pi pi-thumbs-up'"
+        [ngClass]="postDetails.postTo.userInteractions.isLiked ? 'activated-button' : 'default-button'"
+        [rounded]="true"
+        [text]="true">
+      </p-button>
+
+      <span class="text-400 interaction-number">{{ postDetails.postTo.userInteractions.likesNumber }}</span>
+
+      <p-button
+        (click)="toggleButton(3)"
+        [disabled]="buttonStates[3].disabled || postDetails.postTo.userInteractions.isLiked"
+        [icon]="postDetails.postTo.userInteractions.isDisliked ? 'pi pi-thumbs-down-fill' : 'pi pi-thumbs-up'"
+        [ngClass]="postDetails.postTo.userInteractions.isDisliked ? 'activated-button' : 'default-button'"
+        [rounded]="true"
+        [text]="true">
+      </p-button>
+
+      <span class="text-400 interaction-number">{{ postDetails.postTo.userInteractions.dislikesNumber }}</span>
+
+      <p-button
+        (click)="toggleButton(4)"
+        [disabled]="buttonStates[4].disabled"
+        [ngClass]="postDetails.postTo.userInteractions.isReposted ? 'activated-button' : 'default-button'"
+        [rounded]="true"
+        [text]="true"
+        icon='pi pi-sync'>
+      </p-button>
+
+      <span class="text-400 interaction-number">{{ postDetails.postTo.userInteractions.repostsNumber }}</span>
+
+      <p-button
+        (click)="toggleButton(5)"
+        [disabled]="buttonStates[5].disabled"
+        [ngClass]="postDetails.postTo.userInteractions.isQuoted ? 'activated-button' : 'default-button'"
+        [rounded]="true"
+        [text]="true"
+        icon='pi pi-pencil'>
+      </p-button>
+
+      <span class="text-400 interaction-number">{{ postDetails.postTo.userInteractions.quotesNumber }}</span>
+    </div>
+    <hr class="ml-3 mr-3 mt-2">
+    <div>
+      <app-add-post [isComment]="true" [postId]="postDetails.postTo.post.postId"  (commentAdded)="getPostDetails()"></app-add-post>
+    </div>
+    <div>
+      @for (mappedComment of mappedComments; track mappedComment.commentId) {
+        <app-post [postTo]="mappedComment.postTo" [commentId]="mappedComment.commentId"></app-post>
+      }
+
+    </div>
+  </div>
+</div>

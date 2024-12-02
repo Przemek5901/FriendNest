@@ -2,14 +2,13 @@ package pl.polsl.friendnest.controller;
 
 import lombok.RequiredArgsConstructor;
 import org.springframework.http.ResponseEntity;
-import org.springframework.web.bind.annotation.PostMapping;
-import org.springframework.web.bind.annotation.RequestBody;
-import org.springframework.web.bind.annotation.RequestMapping;
-import org.springframework.web.bind.annotation.RestController;
+import org.springframework.web.bind.annotation.*;
 import pl.polsl.friendnest.model.Post;
 import pl.polsl.friendnest.model.PostTo;
 import pl.polsl.friendnest.model.request.AddPostRequest;
+import pl.polsl.friendnest.model.request.GetPostDetailsRequest;
 import pl.polsl.friendnest.model.request.GetPostsRequest;
+import pl.polsl.friendnest.model.response.PostDetails;
 import pl.polsl.friendnest.service.PostService;
 
 import java.util.List;
@@ -33,5 +32,15 @@ public class PostController {
 
     }
 
+    @PostMapping("/getPostDetails")
+    public ResponseEntity<PostDetails> getPostsToExceptUser(@RequestBody GetPostDetailsRequest getPostDetailsRequest) {
+        return ResponseEntity.ok(postService.getPostDetails(getPostDetailsRequest));
 
+    }
+
+    @DeleteMapping("/deletePost/{postId}")
+    public ResponseEntity<Post> deletePost(@PathVariable Long postId) {
+        return ResponseEntity.ok(postService.deletePost(postId));
+
+    }
 }

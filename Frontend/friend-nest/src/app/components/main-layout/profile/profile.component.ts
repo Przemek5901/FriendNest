@@ -82,7 +82,7 @@ export class ProfileComponent extends BaseComponent implements OnInit {
     this.getProfile();
   }
 
-  private getProfile() {
+  private getProfile(): void {
     this.profileService
       .getProfile(this.route.snapshot.params['login'])
       .pipe(this.autoUnsubscribe())
@@ -92,9 +92,8 @@ export class ProfileComponent extends BaseComponent implements OnInit {
       });
   }
 
-  private respondToGetProfile(profile: Profile) {
+  private respondToGetProfile(profile: Profile): void {
     this.profile = profile;
-    console.log(this.profile);
 
     this.editDataForm.controls['profileName'].setValue(
       this.profile.user?.profileName,

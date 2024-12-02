@@ -4,12 +4,12 @@ import org.springframework.data.jpa.domain.Specification;
 import org.springframework.stereotype.Service;
 import org.springframework.util.StringUtils;
 import pl.polsl.friendnest.exception.CustomException;
-import pl.polsl.friendnest.model.Post;
-import pl.polsl.friendnest.model.PostSpecification;
-import pl.polsl.friendnest.model.PostTo;
-import pl.polsl.friendnest.model.User;
+import pl.polsl.friendnest.model.*;
 import pl.polsl.friendnest.model.request.AddPostRequest;
+import pl.polsl.friendnest.model.request.GetPostDetailsRequest;
 import pl.polsl.friendnest.model.request.GetPostsRequest;
+import pl.polsl.friendnest.model.response.PostDetails;
+import pl.polsl.friendnest.repository.CommentRepository;
 import pl.polsl.friendnest.repository.PostRepository;
 import pl.polsl.friendnest.repository.UserRepository;
 import pl.polsl.friendnest.service.FileService;
@@ -17,6 +17,7 @@ import pl.polsl.friendnest.service.InteractionService;
 import pl.polsl.friendnest.service.PostService;
 
 import java.time.OffsetDateTime;
+import java.util.ArrayList;
 import java.util.LinkedList;
 import java.util.List;
 
@@ -28,12 +29,14 @@ public class PostServiceImpl implements PostService {
     private final FileService fileService;
 
     private final InteractionService interactionService;
+    private final CommentRepository commentRepository;
 
-    public PostServiceImpl(PostRepository postRepository, UserRepository userRepository, FileService fileService, InteractionService interactionService) {
+    public PostServiceImpl(PostRepository postRepository, UserRepository userRepository, FileService fileService, InteractionService interactionService, CommentRepository commentRepository) {
         this.postRepository = postRepository;
         this.userRepository = userRepository;
         this.fileService = fileService;
         this.interactionService = interactionService;
+        this.commentRepository = commentRepository;
     }
 
     @Override
@@ -72,11 +75,11 @@ public class PostServiceImpl implements PostService {
     @Override
     public List<PostTo> getPostsToExceptUser(GetPostsRequest getPostsRequest) {
         if(getPostsRequest.getUserId() == null) {
-            throw new CustomException("Błąd, skontaktuj się z administratorem");
+            throw new CustomException();
         }
 
         User user = userRepository.findByUserId(getPostsRequest.getUserId())
-                .orElseThrow(() -> new CustomException("Błąd, skontaktuj się z administratorem"));
+                .orElseThrow(CustomException::new);
 
 
         Specification<Post> specification = Specification
@@ -94,11 +97,53 @@ public class PostServiceImpl implements PostService {
             PostTo postTo = new PostTo();
             postTo.setPost(post);
 
-            postTo.setUserInteractionsToPost(interactionService.getUserInteractionsToPost(user, post));
+            postTo.setUserInteractions(interactionService.getUserInteractions(user,null, post));
             postToList.add(postTo);
         }
 
         return postToList;
+    }
+
+    @Override
+    public PostDetails getPostDetails(GetPostDetailsRequest getPostDetailsRequest) {
+        if(getPostDetailsRequest.getUserId() == null) {
+            throw new CustomException();
+        }
+
+        Post post = postRepository.findPostByPostId(getPostDetailsRequest.getPostId())
+                .orElseThrow(CustomException::new);
+
+        User user = userRepository.findByUserId(getPostDetailsRequest.getUserId())
+                .orElseThrow(CustomException::new);
+
+        PostTo postTo = new PostTo();
+        postTo.setPost(post);
+
+        postTo.setUserInteractions(interactionService.getUserInteractions(user, null,post));
+
+        List<Comment> comments = commentRepository.findCommentsByPost(post);
+
+        List<CommentTo> commentToList = new ArrayList<>();
+
+        if(!comments.isEmpty()) {
+            for(Comment comment: comments) {
+                CommentTo commentTo = new CommentTo();
+                commentTo.setComment(comment);
+                commentTo.setUserInteractions(interactionService.getUserInteractions(user, comment, post));
+                commentToList.add(commentTo);
+            }
+        }
+
+        return PostDetails.builder().postTo(postTo).commentTo(commentToList).build();
+    }
+
+    @Override
+    public Post deletePost(Long postId) {
+        Post post = postRepository.findPostByPostId(postId)
+                .orElseThrow(CustomException::new);
+
+        postRepository.delete(post);
+        return post;
     }
 
 }

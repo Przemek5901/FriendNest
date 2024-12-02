@@ -1,9 +1,8 @@
-import { Component } from '@angular/core';
+import { Component, EventEmitter, Input, Output } from '@angular/core';
 import { Button } from 'primeng/button';
 import { DropdownModule } from 'primeng/dropdown';
 import { PickerComponent } from '@ctrl/ngx-emoji-mart';
 import { BaseComponent } from '../../../../utils/base-component';
-import { Post } from '../../../../models/Post';
 import { User } from '../../../../models/User';
 import { AddPostRequest } from '../../../../models/request/AddPostRequest';
 import { Dictionary } from '../../../../models/Dictionary';
@@ -16,6 +15,8 @@ import { InputTextareaModule } from 'primeng/inputtextarea';
 import { FormsModule, ReactiveFormsModule } from '@angular/forms';
 import { ImageModule } from 'primeng/image';
 import { ToastModule } from 'primeng/toast';
+import { AddCommentRequest } from '../../../../models/request/AddCommentRequest';
+import { CommentService } from '../../../../services/comment.service';
 
 @Component({
   selector: 'app-add-post',
@@ -44,13 +45,34 @@ export class AddPostComponent extends BaseComponent {
     category: '0',
   };
   categories: Dictionary[] = categoryList;
+  private _isComment: boolean = false;
+  private _postId!: number;
 
   constructor(
     private spinnerService: SpinnerService,
     private postService: PostService,
+    private commentService: CommentService,
   ) {
     super();
   }
+
+  @Input() set postId(value: number) {
+    this._postId = value;
+  }
+
+  get postId(): number {
+    return <number>this._postId;
+  }
+
+  @Input() set isComment(value: boolean) {
+    this._isComment = value;
+  }
+
+  get isComment(): boolean {
+    return this._isComment;
+  }
+
+  @Output() commentAdded = new EventEmitter<void>();
 
   addEmoji(event: any) {
     if (this.post.content.length < 150) {
@@ -87,15 +109,35 @@ export class AddPostComponent extends BaseComponent {
       .addPost(this.post)
       .pipe(this.autoUnsubscribe())
       .subscribe({
-        next: (value) => this.respondToAddPost(value),
+        next: (value) => this.respondToAddPostComment(true),
         error: (error) => this.hadleHttpError(error),
       });
   }
 
-  private respondToAddPost(post: Post): void {
+  addComment(): void {
+    const addCommentRequest: AddCommentRequest = {
+      postId: this.postId,
+      userId: this.user.userId,
+      content: this.post.content,
+      imageBase64: this.post.imageBase64,
+    };
+
+    this.commentService
+      .addComment(addCommentRequest)
+      .pipe(this.autoUnsubscribe())
+      .subscribe({
+        next: (value) => this.respondToAddPostComment(false),
+        error: (error) => this.hadleHttpError(error),
+      });
+  }
+
+  private respondToAddPostComment(isPost: boolean): void {
     this.post.content = '';
     this.post.imageBase64 = '';
-    this.openSuccessToast('Dodano post');
+    this.openSuccessToast(isPost ? 'Dodano post' : 'Dodano komentarz');
+    if (!isPost) {
+      this.commentAdded.emit();
+    }
   }
 
   isAddButtonDisabled(): boolean {

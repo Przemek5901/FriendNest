@@ -35,6 +35,13 @@ export const routes: Routes = [
             (m) => m.ProfileComponent,
           ),
       },
+      {
+        path: 'post/:postId',
+        loadComponent: () =>
+          import(
+            './components/main-layout/post-details/post-details.component'
+          ).then((m) => m.PostDetailsComponent),
+      },
     ],
   },
 ];

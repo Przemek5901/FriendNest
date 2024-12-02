@@ -38,7 +38,7 @@ public class ProfileServiceImpl implements ProfileService {
         User user = userRepository.findByLogin(login)
                 .orElseThrow(() -> new CustomException("Nie znaleziono użytkownika!"));
 
-        return Profile.builder()
+        var profile =  Profile.builder()
                 .user(user)
                 .postCount(postRepository.countAllByUser(user))
                 .followersCount(followRepository.countAllByFollower(user))
@@ -46,6 +46,8 @@ public class ProfileServiceImpl implements ProfileService {
                 .posts(postRepository.getPostsByUser(user))
                 .interactions(interactionRepository.findByUser(user))
                 .build();
+
+        return profile;
     }
 
     @Override

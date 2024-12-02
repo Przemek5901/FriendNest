@@ -1,7 +1,7 @@
 import { Post } from '../Post';
-import { UserInteractionsToPost } from './UserInteractionsToPost';
+import { UserInteractions } from './UserInteractionsToPost';
 
 export interface PostTo {
   post: Post;
-  userInteractionsToPost: UserInteractionsToPost;
+  userInteractions: UserInteractions;
 }

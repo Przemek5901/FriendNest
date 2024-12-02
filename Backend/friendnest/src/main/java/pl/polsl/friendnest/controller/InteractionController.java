@@ -7,7 +7,7 @@ import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 import pl.polsl.friendnest.model.request.AddInteractionRequest;
-import pl.polsl.friendnest.model.response.UserInteractionsToPost;
+import pl.polsl.friendnest.model.response.UserInteractions;
 import pl.polsl.friendnest.service.InteractionService;
 
 @RestController
@@ -18,7 +18,7 @@ public class InteractionController {
     private final InteractionService interactionService;
 
     @PostMapping("/addInteraction")
-    public ResponseEntity<UserInteractionsToPost> addInteraction(@RequestBody AddInteractionRequest interactionRequest) {
+    public ResponseEntity<UserInteractions> addInteraction(@RequestBody AddInteractionRequest interactionRequest) {
         return ResponseEntity.ok(interactionService.addInteraction(interactionRequest));
 
     }
