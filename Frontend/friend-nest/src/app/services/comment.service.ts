@@ -15,4 +15,10 @@ export class CommentService {
       addPostRequest,
     );
   }
+
+  deleteComment(commentId: number): Observable<Comment> {
+    return this.http.delete<Comment>(
+      `http://localhost:8080/api/deleteComment/${commentId}`,
+    );
+  }
 }

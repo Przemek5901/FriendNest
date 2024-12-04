@@ -65,4 +65,14 @@ public class CommentServiceImpl implements CommentService {
 
        return comment;
     }
+
+    @Override
+    public Comment deleteComment(Long commentId) {
+        Comment comment = commentRepository.findCommentByCommentId(commentId)
+                .orElseThrow(CustomException::new);
+
+        commentRepository.delete(comment);
+        return comment;
+
+    }
 }

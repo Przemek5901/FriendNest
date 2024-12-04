@@ -2,7 +2,6 @@ package pl.polsl.friendnest.model;
 
 import lombok.*;
 
-import java.sql.ConnectionBuilder;
 import java.util.List;
 
 @NoArgsConstructor
@@ -16,9 +15,9 @@ public class Profile {
     private Long followersCount;
     private Long followingCount;
 
-    private List<Post> posts;
+    private List<PostTo> posts;
 
-    private List<Comment> comments;
+    private List<CommentTo> comments;
 
     private List<Interaction> interactions;
 

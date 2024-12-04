@@ -1,4 +1,4 @@
-import { Component, Input } from '@angular/core';
+import { Component, EventEmitter, Input, Output } from '@angular/core';
 import { NgClass, NgOptimizedImage } from '@angular/common';
 import { User } from '../../../../models/User';
 import { BaseComponent } from '../../../../utils/base-component';
@@ -9,6 +9,8 @@ import { AddInteracionRequest } from '../../../../models/request/AddInteracionRe
 import { PostTo } from '../../../../models/response/PostTo';
 import { UserInteractions } from '../../../../models/response/UserInteractionsToPost';
 import { Router } from '@angular/router';
+import { PostService } from '../../../../services/post.service';
+import { CommentService } from '../../../../services/comment.service';
 
 @Component({
   selector: 'app-post',
@@ -35,6 +37,8 @@ export class PostComponent extends BaseComponent {
   constructor(
     private interactionService: InteractionService,
     private router: Router,
+    private postService: PostService,
+    private commentService: CommentService,
   ) {
     super();
   }
@@ -54,6 +58,8 @@ export class PostComponent extends BaseComponent {
   get postTo(): PostTo {
     return this._postTo;
   }
+
+  @Output() deleted = new EventEmitter<void>();
 
   toggleButton(button: number, event: MouseEvent) {
     event.stopPropagation();
@@ -90,5 +96,38 @@ export class PostComponent extends BaseComponent {
     setTimeout(() => {
       buttonState.disabled = false;
     }, 1000);
+  }
+
+  deltePostComment(event: MouseEvent) {
+    event.stopPropagation();
+    if (this.commentId) {
+      this.commentService
+        .deleteComment(this.commentId)
+        .pipe(this.autoUnsubscribe())
+        .subscribe({
+          next: (value) => this.respondToDeletePostComment(value),
+          error: (error) => this.hadleHttpError(error),
+        });
+    } else {
+      if (this.postTo.post.postId) {
+        this.postService
+          .deletePost(this.postTo.post.postId)
+          .pipe(this.autoUnsubscribe())
+          .subscribe({
+            next: (value) => this.respondToDeletePostComment(value),
+            error: (error) => this.hadleHttpError(error),
+          });
+      }
+    }
+  }
+
+  private respondToDeletePostComment(response: any) {
+    if ('commentId' in response) {
+      this.openSuccessToast('Usunięto komentarz');
+      this.deleted.emit();
+    } else {
+      this.openSuccessToast('Usunięto post');
+      this.deleted.emit();
+    }
   }
 }

@@ -6,7 +6,7 @@ import { GetPostDetails } from '../../../models/request/GetPostDetails';
 import { User } from '../../../models/User';
 import { ActivatedRoute } from '@angular/router';
 import { PostComponent } from '../main-page/post/post.component';
-import { AsyncPipe, NgClass, NgOptimizedImage } from '@angular/common';
+import { AsyncPipe, NgClass, NgIf, NgOptimizedImage } from '@angular/common';
 import { Button } from 'primeng/button';
 import { Location } from '@angular/common';
 import { ImageModule } from 'primeng/image';
@@ -31,6 +31,7 @@ import { Post } from '../../../models/Post';
     NgClass,
     AddPostComponent,
     ToastModule,
+    NgIf,
   ],
   templateUrl: './post-details.component.html',
   styleUrl: './post-details.component.scss',
@@ -131,11 +132,11 @@ export class PostDetailsComponent
     buttonState.disabled = true;
     if (button === 4 && interaction.isReposted) {
       this.openSuccessToast('Podano post dalej!');
-      this.postDetails.postTo.userInteractions = interaction;
-      setTimeout(() => {
-        buttonState.disabled = false;
-      }, 1000);
     }
+    this.postDetails.postTo.userInteractions = interaction;
+    setTimeout(() => {
+      buttonState.disabled = false;
+    }, 1000);
   }
 
   deltePost(): void {
