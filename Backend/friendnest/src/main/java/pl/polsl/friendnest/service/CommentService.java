@@ -6,4 +6,6 @@ import pl.polsl.friendnest.model.request.AddCommentRequest;
 public interface CommentService {
 
     Comment addComment(AddCommentRequest addCommentRequest);
+
+    Comment deleteComment(Long commentId);
 }

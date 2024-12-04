@@ -1,8 +1,8 @@
-<div class="w-full card-container">
+<div class="w-full profile-container">
   <p-toast></p-toast>
   <div class="w-full h-5rem flex">
     <div class="mt-3 ml-2">
-      <p-button icon="pi pi-arrow-left" [rounded]="true" [text]="true"></p-button>
+      <p-button icon="pi pi-arrow-left profile-icons" [rounded]="true" [text]="true"></p-button>
     </div>
     <div class="ml-2">
       <p class="text-xl font-bold">{{ profile.user?.profileName }}</p>
@@ -51,14 +51,16 @@
 
   <p-tabView class="tab-view">
     <p-tabPanel header="Posty">
-      <p>
-        Lorem ipsum dolor sit amet...
-      </p>
+      @for (post of profile.posts; track post.post.postId) {
+        <div class="post" (click)="openPost(post)">
+          <app-post [postTo]="post" (deleted)="getProfile()"></app-post>
+        </div>
+      }
     </p-tabPanel>
     <p-tabPanel header="Komentarze">
-      <p>
-        Sed ut perspiciatis unde omnis iste natus error sit voluptatem accusantium...
-      </p>
+      @for (mappedComment of mappedComments; track mappedComment.commentId) {
+        <app-post [postTo]="mappedComment.postTo" [commentId]="mappedComment.commentId" (deleted)="getProfile()"></app-post>
+      }
     </p-tabPanel>
   </p-tabView>
 </div>

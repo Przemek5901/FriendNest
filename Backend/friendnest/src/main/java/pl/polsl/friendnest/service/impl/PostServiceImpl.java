@@ -105,6 +105,49 @@ public class PostServiceImpl implements PostService {
     }
 
     @Override
+    public List<PostTo> getUserPosts(Long userId) {
+        User user = userRepository.findByUserId(userId)
+                .orElseThrow(CustomException::new);
+
+        List<PostTo> postToList = new ArrayList<>();
+        List<Post> userPosts = postRepository.getPostsByUser(user);
+
+
+        if(!userPosts.isEmpty()) {
+            for(Post post: userPosts) {
+                PostTo postTo = new PostTo();
+
+                postTo.setPost(post);
+                postTo.setUserInteractions(interactionService.getUserInteractions(user, null, post));
+                postToList.add(postTo);
+            }
+        }
+
+        return postToList;
+    }
+
+    @Override
+    public List<CommentTo> getUserComments(Long userId) {
+        User user = userRepository.findByUserId(userId)
+                .orElseThrow(CustomException::new);
+
+        List<CommentTo> commentToList = new ArrayList<>();
+        List<Comment> userComments = commentRepository.findByUser(user);
+
+        if(!userComments.isEmpty()) {
+            for(Comment comment: userComments) {
+                CommentTo commentTo = new CommentTo();
+
+                commentTo.setComment(comment);
+                commentTo.setUserInteractions(interactionService.getUserInteractions(user, comment, comment.getPost()));
+                commentToList.add(commentTo);
+            }
+        }
+
+        return commentToList;
+    }
+
+    @Override
     public PostDetails getPostDetails(GetPostDetailsRequest getPostDetailsRequest) {
         if(getPostDetailsRequest.getUserId() == null) {
             throw new CustomException();

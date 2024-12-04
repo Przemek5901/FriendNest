@@ -1,5 +1,6 @@
 package pl.polsl.friendnest.service;
 
+import pl.polsl.friendnest.model.CommentTo;
 import pl.polsl.friendnest.model.Post;
 import pl.polsl.friendnest.model.PostTo;
 import pl.polsl.friendnest.model.request.AddPostRequest;
@@ -13,6 +14,9 @@ public interface PostService {
 
     Post addPost(AddPostRequest payload);
     List<PostTo> getPostsToExceptUser(GetPostsRequest getPostsRequest);
+
+    List<PostTo> getUserPosts(Long userId);
+    List<CommentTo> getUserComments(Long userId);
 
     PostDetails getPostDetails(GetPostDetailsRequest getPostDetailsRequest);
 

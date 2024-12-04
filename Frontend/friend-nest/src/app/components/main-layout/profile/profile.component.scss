@@ -1,16 +1,10 @@
-.card-container {
+.profile-container {
   display: flex;
   flex-direction: column;
   min-height: 100vh;
   border-left: 1px solid #5e5e5e;
   border-right: 1px solid #5e5e5e;
   overflow-x: hidden;
-}
-
-::ng-deep .pi{
-  font-size: 17px;
-  color: white;
-  font-weight: bold;
 }
 
 .profile-picture{
@@ -63,12 +57,20 @@
 
     .p-tabview-panels {
       background-color: black;
+      padding: 0;
+      color: white;
     }
   }
 
   .icon-button .pi {
     color: var(--primary-color);
     font-size: 29px;
+  }
+
+  .profile-icons .pi{
+    font-size: 17px;
+    color: white;
+    font-weight: bold;
   }
 }
 
@@ -152,6 +154,13 @@
   z-index: 1;
 }
 
+.post {
+  cursor: pointer;
+  transition: background-color 0.3s ease;
+}
 
+.post:hover {
+  background-color: #080808;
+}
 
 

@@ -1,4 +1,4 @@
-import { Component, OnInit } from '@angular/core';
+import { Component, OnInit, ViewEncapsulation } from '@angular/core';
 import { CommonModule, NgIf, NgOptimizedImage } from '@angular/common';
 import { BaseComponent } from '../../../utils/base-component';
 import { User } from '../../../models/User';
@@ -15,7 +15,7 @@ import {
 import { DropdownModule } from 'primeng/dropdown';
 import { InputTextModule } from 'primeng/inputtext';
 import { SpinnerComponent } from '../../../utils/spinner/spinner.component';
-import { ActivatedRoute } from '@angular/router';
+import { ActivatedRoute, Router } from '@angular/router';
 import { ProfileService } from '../../../services/profile.service';
 import { Profile } from '../../../models/Profile';
 import { TabViewModule } from 'primeng/tabview';
@@ -26,6 +26,10 @@ import { InputTextareaModule } from 'primeng/inputtextarea';
 import { ProfileRequest } from '../../../models/request/ProfileRequest';
 import { SpinnerService } from '../../../services/spinner.service';
 import { ToastModule } from 'primeng/toast';
+import { PostComponent } from '../main-page/post/post.component';
+import { PostTo } from '../../../models/response/PostTo';
+import { mapCommentToPost } from '../../../utils/PostDTO';
+import { AuthService } from '../../../services/auth.service';
 
 @Component({
   selector: 'app-profile',
@@ -46,6 +50,7 @@ import { ToastModule } from 'primeng/toast';
     FileUploadModule,
     InputTextareaModule,
     ToastModule,
+    PostComponent,
   ],
   providers: [MessageService],
   templateUrl: './profile.component.html',
@@ -53,12 +58,13 @@ import { ToastModule } from 'primeng/toast';
 })
 export class ProfileComponent extends BaseComponent implements OnInit {
   user: User = this.getUser();
-  profile: Profile = {};
+  profile: Profile = { comments: [], posts: [] };
   genders: Dictionary[] = genderList;
   profileImageUrl: string | ArrayBuffer | null = '';
   backgroundImageUrl: string | ArrayBuffer | null = '';
 
   visible: boolean = false;
+  mappedComments: { postTo: PostTo; commentId: number }[] = [];
 
   editDataForm: FormGroup;
 
@@ -67,6 +73,8 @@ export class ProfileComponent extends BaseComponent implements OnInit {
     private route: ActivatedRoute,
     private profileService: ProfileService,
     private spinnerService: SpinnerService,
+    private router: Router,
+    private authService: AuthService,
   ) {
     super();
     this.editDataForm = this.fb.group({
@@ -82,7 +90,7 @@ export class ProfileComponent extends BaseComponent implements OnInit {
     this.getProfile();
   }
 
-  private getProfile(): void {
+  getProfile(): void {
     this.profileService
       .getProfile(this.route.snapshot.params['login'])
       .pipe(this.autoUnsubscribe())
@@ -108,6 +116,15 @@ export class ProfileComponent extends BaseComponent implements OnInit {
     this.backgroundImageUrl =
       profile.user?.backgroundImageUrl ??
       'http://localhost:8080/defaults/background.png';
+
+    if (profile.comments) {
+      this.mappedComments = profile.comments.map((comment) => ({
+        postTo: mapCommentToPost(comment),
+        commentId: comment.comment.commentId,
+      }));
+    } else {
+      this.mappedComments = [];
+    }
   }
 
   changeProfilePicture(event: any) {
@@ -160,6 +177,9 @@ export class ProfileComponent extends BaseComponent implements OnInit {
 
   private respondToEditProfile(profile: Profile): void {
     this.profile = profile;
+    if (profile.user) {
+      this.authService.setUser(profile.user);
+    }
     window.location.reload();
   }
 
@@ -178,5 +198,9 @@ export class ProfileComponent extends BaseComponent implements OnInit {
 
   editData(): void {
     this.visible = true;
+  }
+
+  openPost(postTo: PostTo): void {
+    this.router.navigate(['post', postTo.post.postId]);
   }
 }

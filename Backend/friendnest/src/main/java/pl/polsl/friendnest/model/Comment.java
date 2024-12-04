@@ -26,7 +26,7 @@ public class Comment {
     @JoinColumn(name = "\"POST_ID\"")
     private Post post;
 
-    @ManyToOne(fetch = FetchType.LAZY, optional = false)
+    @ManyToOne(fetch = FetchType.EAGER, optional = false)
     @OnDelete(action = OnDeleteAction.CASCADE)
     @JoinColumn(name = "\"USER_ID\"", nullable = false)
     private User user;

@@ -7,9 +7,16 @@
     </div>
   </div>
   <div class="col-9">
-    <div class="block h-1rem mt-3">
-      <span class="text-xl font-bold">{{postTo.post.user.profileName}}</span>
-      <span class="text-l text-400 ml-1">{{'@' + postTo.post.user.login}}</span>
+    <div class="grid">
+      <div class="block h-1rem mt-3">
+        <span class="text-xl font-bold">{{postTo.post.user.profileName}}</span>
+        <span class="text-l text-400 ml-1">{{'@' + postTo.post.user.login}}</span>
+      </div>
+      @if(postTo.post.user.userId === user.userId){
+        <div class="ml-auto block h-1rem delete-button-icon" >
+          <p-button icon="pi pi-trash" [rounded]="true" [text]="true" severity="danger" (click)="deltePostComment($event)"/>
+        </div>
+      }
     </div>
     <div class="block mt-2">
       @if(postTo.post.imageUrl) {

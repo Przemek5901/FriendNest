@@ -8,6 +8,7 @@ import pl.polsl.friendnest.model.User;
 import pl.polsl.friendnest.model.request.ProfileRequest;
 import pl.polsl.friendnest.repository.*;
 import pl.polsl.friendnest.service.FileService;
+import pl.polsl.friendnest.service.PostService;
 import pl.polsl.friendnest.service.ProfileService;
 
 import java.time.OffsetDateTime;
@@ -22,15 +23,17 @@ public class ProfileServiceImpl implements ProfileService {
 
     private final FollowRepository followRepository;
     private final FileService fileService;
+    private final PostService postService;
 
 
-    public ProfileServiceImpl(UserRepository userRepository, CommentRepository commentRepository, PostRepository postRepository, InteractionRepository interactionRepository, FollowRepository followRepository, FileService fileService) {
+    public ProfileServiceImpl(UserRepository userRepository, CommentRepository commentRepository, PostRepository postRepository, InteractionRepository interactionRepository, FollowRepository followRepository, FileService fileService, PostService postService) {
         this.userRepository = userRepository;
         this.commentRepository = commentRepository;
         this.postRepository = postRepository;
         this.interactionRepository = interactionRepository;
         this.followRepository = followRepository;
         this.fileService = fileService;
+        this.postService = postService;
     }
 
     @Override
@@ -38,16 +41,15 @@ public class ProfileServiceImpl implements ProfileService {
         User user = userRepository.findByLogin(login)
                 .orElseThrow(() -> new CustomException("Nie znaleziono użytkownika!"));
 
-        var profile =  Profile.builder()
+        return Profile.builder()
                 .user(user)
                 .postCount(postRepository.countAllByUser(user))
                 .followersCount(followRepository.countAllByFollower(user))
                 .followingCount(followRepository.countAllByFollowed(user))
-                .posts(postRepository.getPostsByUser(user))
+                .posts(postService.getUserPosts(Long.valueOf(user.getUserId())))
+                .comments(postService.getUserComments(Long.valueOf(user.getUserId())))
                 .interactions(interactionRepository.findByUser(user))
                 .build();
-
-        return profile;
     }
 
     @Override

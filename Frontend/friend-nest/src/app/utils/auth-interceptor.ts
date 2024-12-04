@@ -17,7 +17,7 @@ export const authInterceptor: HttpInterceptorFn = (
   const spinnerService = inject(SpinnerService);
   const token = authService.getToken();
 
-  spinnerService.show();
+  //spinnerService.show();
 
   if (token) {
     const clonedRequest = req.clone({
