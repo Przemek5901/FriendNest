@@ -8,14 +8,14 @@ import { InteractionService } from '../../../../services/interaction.service';
 import { AddInteracionRequest } from '../../../../models/request/AddInteracionRequest';
 import { PostTo } from '../../../../models/response/PostTo';
 import { UserInteractions } from '../../../../models/response/UserInteractionsToPost';
-import { Router } from '@angular/router';
+import {Router, RouterLink} from '@angular/router';
 import { PostService } from '../../../../services/post.service';
 import { CommentService } from '../../../../services/comment.service';
 
 @Component({
   selector: 'app-post',
   standalone: true,
-  imports: [NgOptimizedImage, Button, NgClass, ImageModule],
+  imports: [NgOptimizedImage, Button, NgClass, ImageModule, RouterLink],
   templateUrl: './post.component.html',
   styleUrl: './post.component.scss',
 })

@@ -18,7 +18,7 @@
     <div class="flex flex-wrap w-19rem">
       <form [formGroup]="loginForm">
         <input type="text"  class="mb-2" pInputText placeholder="Login" formControlName="login"/>
-        <input class="mb-3" type="password" pInputText placeholder="Hasło" formControlName="password"/>
+        <input class="mb-3" type="password" pInputText placeholder="Hasło" formControlName="password" (keydown.enter)="onLogin()"/>
         <div>
           <p-button label="Zaloguj się" class="top-button"
                     [rounded]="true" [outlined]="true" (click)="onLogin()"/>

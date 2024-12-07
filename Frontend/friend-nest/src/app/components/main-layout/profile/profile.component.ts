@@ -1,5 +1,10 @@
 import { Component, OnInit, ViewEncapsulation } from '@angular/core';
-import { CommonModule, NgIf, NgOptimizedImage } from '@angular/common';
+import {
+  CommonModule,
+  Location,
+  NgIf,
+  NgOptimizedImage,
+} from '@angular/common';
 import { BaseComponent } from '../../../utils/base-component';
 import { User } from '../../../models/User';
 import { MessageService } from 'primeng/api';
@@ -75,6 +80,7 @@ export class ProfileComponent extends BaseComponent implements OnInit {
     private spinnerService: SpinnerService,
     private router: Router,
     private authService: AuthService,
+    private location: Location,
   ) {
     super();
     this.editDataForm = this.fb.group({
@@ -88,6 +94,16 @@ export class ProfileComponent extends BaseComponent implements OnInit {
 
   ngOnInit() {
     this.getProfile();
+    this.subscribeToLoginChanges();
+  }
+
+  private subscribeToLoginChanges(): void {
+    this.route.paramMap.pipe(this.autoUnsubscribe()).subscribe((params) => {
+      const login = params.get('login');
+      if (login) {
+        this.getProfile();
+      }
+    });
   }
 
   getProfile(): void {
@@ -202,5 +218,9 @@ export class ProfileComponent extends BaseComponent implements OnInit {
 
   openPost(postTo: PostTo): void {
     this.router.navigate(['post', postTo.post.postId]);
+  }
+
+  goBack(): void {
+    this.location.back();
   }
 }

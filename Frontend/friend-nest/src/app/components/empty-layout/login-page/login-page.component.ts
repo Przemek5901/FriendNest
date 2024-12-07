@@ -111,7 +111,7 @@ export class LoginPageComponent extends BaseComponent implements OnInit {
       this.isLoading = true;
       this.loginService
         .login(
-          this.loginForm.controls['login'].value,
+          this.loginForm.controls['login'].value.trim(),
           this.loginForm.controls['password'].value,
         )
         .pipe(this.autoUnsubscribe())

@@ -2,7 +2,7 @@
   <div class="col-2 mt-2">
     <div class="image-container ml-1">
       <img [ngSrc]="postTo.post.user.profileImageUrl ? postTo.post.user.profileImageUrl : 'http://localhost:8080/defaults/profile.png'"
-           width="80"
+           width="80" [routerLink]="['/profile', postTo.post.user.login]" (click)="$event.stopPropagation()"
            height="80">
     </div>
   </div>
@@ -21,7 +21,7 @@
     <div class="block mt-2">
       @if(postTo.post.imageUrl) {
         <div class="mt-3 mb-3 border-round-xl max-h-30rem overflow-hidden">
-          <p-image [src]="postTo.post.imageUrl" [preview]="true" width="460"  (click)="$event.stopPropagation()"></p-image>
+          <p-image [src]="postTo.post.imageUrl" [preview]="true" width="460" (click)="$event.stopPropagation()"></p-image>
         </div>
       }
       <span>{{postTo.post.content}}</span>
@@ -50,7 +50,7 @@
       <span class="text-400 interaction-number">{{postTo.userInteractions.likesNumber}}</span>
 
       <p-button
-        [icon]="postTo.userInteractions.isDisliked ? 'pi pi-thumbs-down-fill' : 'pi pi-thumbs-up'"
+        [icon]="postTo.userInteractions.isDisliked ? 'pi pi-thumbs-down-fill' : 'pi pi-thumbs-down'"
         [rounded]="true"
         [text]="true"
         [ngClass]="postTo.userInteractions.isDisliked ? 'activated-button' : 'default-button'"

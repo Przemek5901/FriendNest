@@ -60,28 +60,13 @@ img {
   object-position: center;
 }
 
-
-::ng-deep .custom-image img {
-  width: 100%;
-  height: auto;
-  object-fit: contain;
-}
-
 .delete-button {
   position: absolute;
   top: 5px;
   right: 5px;
 }
-::ng-deep {
-  .p-inputtext {
-    background-color: black;
-    color: white;
-    border: none;
-    border-bottom: 1px solid #5e5e5e;
-    border-radius: 0;
-    font-size: 20px;
-  }
 
+::ng-deep {
   .pi {
     font-size: 1.2rem;
   }
@@ -101,40 +86,10 @@ img {
     background-color: var(--primary-color) !important;
   }
 
-  .category-dropdown {
-    .p-dropdown {
-      max-height: 40px;
-      border-radius: 0;
-      border: none;
-      border-bottom: 1px solid #5e5e5e;
-      margin-bottom: 8px;
-
-      .p-dropdown-trigger {
-        background-color: black;
-        border-top-right-radius: 0;
-        border-bottom-right-radius: 0;
-      }
-    }
-
-    .p-inputtext {
-      padding: 0.4rem;
-      border: none;
-    }
-
-    .p-dropdown-panel {
-      .p-dropdown-items {
-        background-color: black;
-        color: white;
-
-        .p-dropdown-item {
-          color: white;
-
-          &:not(.p-highlight):not(.p-disabled):hover {
-            background-color: #5e5e5e;
-          }
-        }
-      }
-    }
+  .custom-image img {
+    width: 100%;
+    height: auto;
+    object-fit: contain;
   }
 }
 
