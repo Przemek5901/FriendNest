@@ -65,6 +65,16 @@ export class PostDetailsComponent
 
   ngOnInit() {
     this.getPostDetails();
+    this.subscribeToPostIdChanges();
+  }
+
+  private subscribeToPostIdChanges(): void {
+    this.route.paramMap.pipe(this.autoUnsubscribe()).subscribe((params) => {
+      const login = params.get('postId');
+      if (login) {
+        this.getPostDetails();
+      }
+    });
   }
 
   ngOnChanges(): void {

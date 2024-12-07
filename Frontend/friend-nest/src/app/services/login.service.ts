@@ -15,12 +15,10 @@ export class LoginService {
       login: login,
       password: password,
     };
-    return this.http
-      .post<AuthenticationResponse>(
-        `http://localhost:8080/api/auth/authenticate`,
-        loginCredentials,
-      )
-      .pipe(delay(1000));
+    return this.http.post<AuthenticationResponse>(
+      `http://localhost:8080/api/auth/authenticate`,
+      loginCredentials,
+    );
   }
 
   register(user: RegisterRequest): Observable<AuthenticationResponse> {

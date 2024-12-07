@@ -1,0 +1,51 @@
+.search-container {
+
+  flex-direction: column;
+  border-left: 1px solid #5e5e5e;
+  border-right: 1px solid #5e5e5e;
+  overflow-x: hidden;
+}
+
+.search-input {
+  width: 34rem;
+}
+
+.search-icon {
+  cursor: pointer;
+}
+
+.tab-view-container {
+  margin-left: 1px;
+  overflow-x: hidden;
+  height: 85%;
+}
+
+.search-input-container {
+  border-bottom: 1px solid #5e5e5e;
+}
+
+.post {
+  cursor: pointer;
+  transition: background-color 0.3s ease;
+}
+
+.post:hover {
+  background-color: #080808;
+}
+
+.profile-picture {
+  border-radius: 50%;
+}
+
+.user {
+  margin-top: 0;
+  border-bottom: 1px solid #5e5e5e;
+  cursor: pointer;
+  transition: background-color 0.3s ease;
+}
+
+.user:hover {
+  background-color: #080808;
+}
+
+

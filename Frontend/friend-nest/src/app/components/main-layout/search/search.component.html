@@ -1,0 +1,55 @@
+<div class="w-full min-h-full h-full search-container">
+  <p-toast></p-toast>
+  <div>
+    <p class="text-3xl ml-4 font-bold mt-3 mb-2">Wyszukaj</p>
+  </div>
+  <div class="mt-2 search-input-container h-5rem">
+    <p-iconField class="mr-4 ml-5" iconPosition="right">
+      <p-inputIcon (click)="search()" class="search-icon" styleClass="pi pi-search"/>
+      <input [(ngModel)]="keyword" class="mb-2 search-input" pInputText placeholder="Wpisz aby wyszukać" type="text"
+              (keydown.enter)="search()"/>
+    </p-iconField>
+  </div>
+  <div class="w-full tab-view-container">
+    <p-tabView class="tab-view">
+      <p-tabPanel header="Użytkownicy">
+        @if (searchResults.users && searchResults.users.length > 0) {
+          @for (user of searchResults.users; track user.userId) {
+            <div class="user grid h-6rem" [routerLink]="['/profile', user.login]">
+              <div class="col-2 profile-picture-container ml-4">
+                <div class="ml-1">
+                  <img [ngSrc]="user.profileImageUrl ? user.profileImageUrl : 'http://localhost:8080/defaults/profile.png'"
+                       height="80" class="profile-picture"
+                       width="80">
+                </div>
+              </div>
+              <div class="col-9">
+                <div class="white-space-nowrap overflow-hidden text-overflow-ellipsis ml-2">
+                  <p class="text-2xl w-10 font-bold profile-name mt-2">{{ user.profileName }}</p>
+                  <p class="text-l w-10 -mt-3 text-400">{{ '@' + user.login }}</p>
+                </div>
+              </div>
+            </div>
+          }
+        } @else {
+          <div class="h-30rem flex justify-content-center align-items-center">
+            <span class="text-2xl text-400">Brak wyników</span>
+          </div>
+        }
+      </p-tabPanel>
+      <p-tabPanel header="Posty">
+        @if (searchResults.posts && searchResults.posts.length > 0) {
+          @for (post of searchResults.posts; track post.post.postId) {
+            <div class="post">
+              <app-post [postTo]="post" (click)="openPost(post.post.postId)"></app-post>
+            </div>
+          }
+        } @else {
+          <div class="h-30rem flex justify-content-center align-items-center">
+            <span class="text-2xl text-400">Brak wyników</span>
+          </div>
+        }
+      </p-tabPanel>
+    </p-tabView>
+  </div>
+</div>
