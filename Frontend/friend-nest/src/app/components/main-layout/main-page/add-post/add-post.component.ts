@@ -1,4 +1,13 @@
-import { Component, EventEmitter, Input, Output } from '@angular/core';
+import {
+  AfterViewInit,
+  Component,
+  ElementRef,
+  EventEmitter,
+  Input,
+  OnInit,
+  Output,
+  ViewChild,
+} from '@angular/core';
 import { Button } from 'primeng/button';
 import { DropdownModule } from 'primeng/dropdown';
 import { PickerComponent } from '@ctrl/ngx-emoji-mart';
@@ -11,12 +20,13 @@ import { SpinnerService } from '../../../../services/spinner.service';
 import { PostService } from '../../../../services/post.service';
 import { CommentComponent } from '../comment/comment.component';
 import { NgOptimizedImage } from '@angular/common';
-import { InputTextareaModule } from 'primeng/inputtextarea';
+import { InputTextarea, InputTextareaModule } from 'primeng/inputtextarea';
 import { FormsModule, ReactiveFormsModule } from '@angular/forms';
 import { ImageModule } from 'primeng/image';
 import { ToastModule } from 'primeng/toast';
 import { AddCommentRequest } from '../../../../models/request/AddCommentRequest';
 import { CommentService } from '../../../../services/comment.service';
+import { ActivatedRoute } from '@angular/router';
 
 @Component({
   selector: 'app-add-post',
@@ -36,7 +46,8 @@ import { CommentService } from '../../../../services/comment.service';
   templateUrl: './add-post.component.html',
   styleUrl: './add-post.component.scss',
 })
-export class AddPostComponent extends BaseComponent {
+export class AddPostComponent extends BaseComponent implements AfterViewInit {
+  @ViewChild('textArea') textarea!: ElementRef;
   user: User = this.getUser();
   emojiBar: boolean = false;
   imageUrl: string | ArrayBuffer | null = '';
@@ -52,8 +63,25 @@ export class AddPostComponent extends BaseComponent {
     private spinnerService: SpinnerService,
     private postService: PostService,
     private commentService: CommentService,
+    private route: ActivatedRoute,
   ) {
     super();
+  }
+
+  ngAfterViewInit(): void {
+    this.route.queryParams.subscribe((params) => {
+      if (params['focus'] === 'true') {
+        this.setFocusOnTextarea();
+      }
+    });
+  }
+
+  setFocusOnTextarea(): void {
+    if (this.textarea?.nativeElement) {
+      setTimeout(() => {
+        this.textarea.nativeElement.focus();
+      }, 100);
+    }
   }
 
   @Input() set postId(value: number) {

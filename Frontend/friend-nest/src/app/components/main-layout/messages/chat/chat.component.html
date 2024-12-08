@@ -1,0 +1,45 @@
+<div class="w-full h-4rem flex justify-content-center align-items-center chats-header">
+  <span class="text-3xl font-bold">Wiadomości</span>
+</div>
+<div class="w-full h-5rem flex justify-content-center align-items-center chats-header">
+  <p-autoComplete
+    #autoComplete
+    (input)="onInputChange($event)"
+    (onSelect)="selectUser()"
+    [(ngModel)]="user"
+    [emptySelectionMessage]="'Brak wyników'"
+    [group]="true"
+    [suggestions]="filteredGroups"
+    placeholder="Wpisz aby wyszukać"
+    scrollHeight="200">
+    <ng-template let-item pTemplate="item">
+      <div class="flex align-items-center">
+        @if (item.value.profileImageUrl) {
+          <img [src]="item.value.profileImageUrl" alt="" class="icon">
+        }
+        <span>{{ item.label.length > 20 ? (item.label.substring(0, 23)) + '...' : item.label }}</span>
+      </div>
+    </ng-template>
+  </p-autoComplete>
+</div>
+<div>
+  @for (chat of chats; track chat.chat?.user2) {
+    <div class="grid w-full flex flex-wrap chat-container"
+         [ngClass]="{ 'selected-chat' : selectedChat.chat.chatId === chat.chat.chatId}"
+         (click)="selectChat(chat)"
+    >
+      <div class="col-4 flex justify-content-end align-items-center">
+        <img
+          [src]="getSecondChatter(chat)?.profileImageUrl ? getSecondChatter(chat)?.profileImageUrl : 'http://localhost:8080/defaults/profile.png'"
+          alt="" class="icon">
+      </div>
+      <div class="col-8">
+        <div class="white-space-nowrap overflow-hidden text-overflow-ellipsis -ml-2">
+          <p class="text-2xl w-10 font-bold mt-2">{{ getSecondChatter(chat)?.profileName }}</p>
+          <p
+            class="text-l w-10 -mt-3 text-400">{{getLastMessage(chat)}}</p>
+        </div>
+      </div>
+    </div>
+  }
+</div>

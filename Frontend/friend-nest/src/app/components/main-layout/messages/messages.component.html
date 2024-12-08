@@ -1,0 +1,85 @@
+<div class="w-full min-h-full flex flex-row search-container">
+  <div class="container">
+    @if (chats.length === 0) {
+      <div class="w-full h-full flex justify-content-center align-items-center">
+        <span class="text-2xl text-400">Brak rozpoczętych czatów do wyświetlenia</span>
+      </div>
+    } @else {
+      <div class="w-full h-8rem message-header" [routerLink]="['/profile', getSecondChatter(selectedChat)?.login]">
+        <div class="grid">
+          <div class="col-2">
+            <img [src]="getSecondChatter(selectedChat)?.profileImageUrl" alt="" class="message-profile-image mt-3 ml-3">
+          </div>
+          <div class="col-8">
+            <div class="col-8 white-space-nowrap overflow-hidden text-overflow-ellipsis mt-2">
+              <p class="text-2xl w-10 font-bold profile-name mt-2">{{ getSecondChatter(selectedChat)?.profileName }}</p>
+              <p class="text-l w-10 -mt-3 text-400">{{ '@' + getSecondChatter(selectedChat)?.login }}</p>
+            </div>
+          </div>
+        </div>
+      </div>
+      <div class="w-full messages-container flex flex-column"
+           [ngClass]="{'messages-container-small': imageBase64 && imageUrl}">
+        @for (message of messages; track message) {
+          <div class="flex flex-column ml-1 mr-1">
+            <div [ngClass]="message.sender?.userId === loggedUser.userId ? 'logged-user-message' : 'receiver-message'">
+              @if (message.imageUrl && message.imageUrl.length > 0) {
+                <p-image [src]="message.imageUrl" class="border-round-md" [preview]="true" width="100"></p-image>
+              }
+              <span class="message-content">
+                {{ message.content }}
+              </span>
+            </div>
+            <span class="ml-1 mr-1 mb-2"
+                  [ngClass]="message.sender?.userId === loggedUser.userId ? 'logged-user-message-date' : 'receiver-message-date'">
+        {{ message.createdAt | date: 'dd.MM.yyyy HH:mm' }}
+      </span>
+          </div>
+        }
+      </div>
+
+      @if (imageBase64.length > 0 && imageUrl) {
+        <div class="w-full h-7rem message-to-send-image flex overflow-hidden relative">
+          <div class="image-container relative overflow-hidden">
+            <img [src]="imageUrl ? imageUrl : 'http://localhost:8080/defaults/background.png'" alt="Image"
+                 class="message-image"/>
+            <p-button [rounded]="true" [text]="true"
+                      class="delete-button"
+                      icon="pi pi-times-circle"
+                      (click)="deleteImage()">
+            </p-button>
+          </div>
+        </div>
+
+      }
+      <div class="w-full h-4rem flex flex-wrap">
+        <div class="message-bar"
+             [ngClass]="{'border-top-left' : imageUrl && imageBase64}">
+          <p-button icon="pi pi-image" [rounded]="true" [text]="true"><input
+            (change)="addPhoto($event)" accept="image/*"
+            class="file-input"
+            type="file"/></p-button>
+          <p-button icon="pi pi-face-smile" (click)="emojiBar = !emojiBar" [rounded]="true" [text]="true"/>
+          @if (emojiBar) {
+            <emoji-mart class="emoji-bar" (emojiClick)="addEmoji($event)" set="apple" [perLine]="7"
+                        [hideObsolete]="true"></emoji-mart>
+          }
+        </div>
+        <div class="message-input-container">
+          <input type="text" pInputText [(ngModel)]="messageToSend" class="message-to-send"
+                 (keydown.enter)="sendMessage()"
+                 maxlength="250"/>
+        </div>
+        <div class="send-icon-bar"
+             [ngClass]="{'border-top-right' : imageUrl && imageBase64}">
+          <p-button icon="pi pi-send" [rounded]="true" [text]="true" (click)="sendMessage()"
+                    [disabled]="messageToSend.length === 0 && imageBase64.length === 0 "/>
+        </div>
+      </div>
+    }
+  </div>
+  <div class="chats-containter">
+    <app-chat #chatComponent (selectedChatChange)="onSelectedChatChange($event)" [(selectedChat)]="selectedChat" [(user)]="user"
+              [chats]="chats"></app-chat>
+  </div>
+</div>

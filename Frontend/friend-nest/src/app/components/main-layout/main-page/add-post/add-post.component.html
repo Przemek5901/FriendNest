@@ -24,6 +24,7 @@
       </div>
     }
     <textarea
+      #textArea
       [(ngModel)]="post.content"
       [placeholder]="post.imageBase64 ? 'Dodaj opis zdjęcia': (isComment ? 'Skomentuj' : 'Co słychać?')"
       class="taPost"

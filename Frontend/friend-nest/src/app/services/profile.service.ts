@@ -3,6 +3,7 @@ import { HttpClient } from '@angular/common/http';
 import { Profile } from '../models/Profile';
 import { Observable } from 'rxjs';
 import { ProfileRequest } from '../models/request/ProfileRequest';
+import { User } from '../models/User';
 
 @Injectable({
   providedIn: 'root',
@@ -25,5 +26,12 @@ export class ProfileService {
       'http://localhost:8080/api/editProfile',
       profile,
     );
+  }
+
+  getUser(userId: number): Observable<User> {
+    const payload = {
+      userId: userId,
+    };
+    return this.http.post<User>('http://localhost:8080/api/getUser', payload);
   }
 }

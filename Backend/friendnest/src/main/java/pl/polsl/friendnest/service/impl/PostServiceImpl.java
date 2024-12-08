@@ -41,7 +41,7 @@ public class PostServiceImpl implements PostService {
 
     @Override
     public Post addPost(AddPostRequest payload) {
-        if(payload == null) {
+        if (payload == null) {
             throw new CustomException("Nie udało się dodać postu");
         }
 
@@ -52,15 +52,15 @@ public class PostServiceImpl implements PostService {
 
         post.setUser(user);
 
-        if(!StringUtils.hasLength(payload.getImageBase64()) && !StringUtils.hasLength(payload.getContent())) {
+        if (!StringUtils.hasLength(payload.getImageBase64()) && !StringUtils.hasLength(payload.getContent())) {
             throw new CustomException("Nie udało się dodać postu");
         }
 
-        if(StringUtils.hasLength(payload.getImageBase64())) {
+        if (StringUtils.hasLength(payload.getImageBase64())) {
             post.setImageUrl(fileService.saveFileFromBase64(payload.getImageBase64(), "posts"));
         }
 
-        if(StringUtils.hasLength(payload.getContent())) {
+        if (StringUtils.hasLength(payload.getContent())) {
             post.setContent(payload.getContent());
         }
 
@@ -74,7 +74,7 @@ public class PostServiceImpl implements PostService {
 
     @Override
     public List<PostTo> getPostsToExceptUser(GetPostsRequest getPostsRequest) {
-        if(getPostsRequest.getUserId() == null) {
+        if (getPostsRequest.getUserId() == null) {
             throw new CustomException();
         }
 
@@ -97,7 +97,7 @@ public class PostServiceImpl implements PostService {
             PostTo postTo = new PostTo();
             postTo.setPost(post);
 
-            postTo.setUserInteractions(interactionService.getUserInteractions(user,null, post));
+            postTo.setUserInteractions(interactionService.getUserInteractions(user, null, post));
             postToList.add(postTo);
         }
 
@@ -113,8 +113,8 @@ public class PostServiceImpl implements PostService {
         List<Post> userPosts = postRepository.getPostsByUser(user);
 
 
-        if(!userPosts.isEmpty()) {
-            for(Post post: userPosts) {
+        if (!userPosts.isEmpty()) {
+            for (Post post : userPosts) {
                 PostTo postTo = new PostTo();
 
                 postTo.setPost(post);
@@ -134,8 +134,8 @@ public class PostServiceImpl implements PostService {
         List<CommentTo> commentToList = new ArrayList<>();
         List<Comment> userComments = commentRepository.findByUser(user);
 
-        if(!userComments.isEmpty()) {
-            for(Comment comment: userComments) {
+        if (!userComments.isEmpty()) {
+            for (Comment comment : userComments) {
                 CommentTo commentTo = new CommentTo();
 
                 commentTo.setComment(comment);
@@ -149,7 +149,7 @@ public class PostServiceImpl implements PostService {
 
     @Override
     public PostDetails getPostDetails(GetPostDetailsRequest getPostDetailsRequest) {
-        if(getPostDetailsRequest.getUserId() == null) {
+        if (getPostDetailsRequest.getUserId() == null) {
             throw new CustomException();
         }
 
@@ -162,14 +162,14 @@ public class PostServiceImpl implements PostService {
         PostTo postTo = new PostTo();
         postTo.setPost(post);
 
-        postTo.setUserInteractions(interactionService.getUserInteractions(user, null,post));
+        postTo.setUserInteractions(interactionService.getUserInteractions(user, null, post));
 
         List<Comment> comments = commentRepository.findCommentsByPost(post);
 
         List<CommentTo> commentToList = new ArrayList<>();
 
-        if(!comments.isEmpty()) {
-            for(Comment comment: comments) {
+        if (!comments.isEmpty()) {
+            for (Comment comment : comments) {
                 CommentTo commentTo = new CommentTo();
                 commentTo.setComment(comment);
                 commentTo.setUserInteractions(interactionService.getUserInteractions(user, comment, post));

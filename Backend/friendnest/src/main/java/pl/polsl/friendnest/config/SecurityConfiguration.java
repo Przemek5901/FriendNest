@@ -28,6 +28,7 @@ public class SecurityConfiguration {
                     registry.requestMatchers("/defaults/**").permitAll();
                     registry.requestMatchers("/posts/**").permitAll();
                     registry.requestMatchers("/comments/**").permitAll();
+                    registry.requestMatchers("/messages/**").permitAll();
                     registry.requestMatchers("/profile-pictures/**").permitAll();
                     registry.requestMatchers("/background-pictures/**").permitAll();
                     registry.anyRequest().authenticated();

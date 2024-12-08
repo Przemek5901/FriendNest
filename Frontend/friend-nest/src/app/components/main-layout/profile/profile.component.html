@@ -2,7 +2,7 @@
   <p-toast></p-toast>
   <div class="w-full h-5rem flex">
     <div class="mt-3 ml-2">
-      <p-button icon="pi pi-arrow-left profile-icons" [rounded]="true" [text]="true" (onClick)="goBack()"></p-button>
+      <p-button (onClick)="goBack()" [rounded]="true" [text]="true" icon="pi pi-arrow-left profile-icons"></p-button>
     </div>
     <div class="ml-2">
       <p class="text-xl font-bold">{{ profile.user?.profileName }}</p>
@@ -22,11 +22,16 @@
     <img
       [src]="profile.user?.profileImageUrl ? profile.user?.profileImageUrl : 'http://localhost:8080/defaults/profile.png'"
       alt="background-picture"
-      style="max-width: 23%; height: auto;"
       class="profile-picture"
+      style="max-width: 23%; height: auto;"
     />
-    <p-button label="Edytuj profil" class="edit-button" [rounded]="true" [outlined]="true"
-              (click)="editData()"></p-button>
+    @if (user.userId === profile.user?.userId) {
+      <p-button label="Edytuj profil" class="edit-button" [rounded]="true" [outlined]="true"
+                (click)="editData()"></p-button>
+    } @else {
+      <p-button label="Wiadomość" [rounded]="true" [outlined]="true" class="message-button mr-2" icon="pi pi-envelope"
+                iconPos="right" (click)="sendMessage(profile.user)"/>
+    }
   </div>
 
   <div class="w-full ml-3">
@@ -59,7 +64,8 @@
     </p-tabPanel>
     <p-tabPanel header="Komentarze">
       @for (mappedComment of mappedComments; track mappedComment.commentId) {
-        <app-post [postTo]="mappedComment.postTo" [commentId]="mappedComment.commentId" (deleted)="getProfile()"></app-post>
+        <app-post [postTo]="mappedComment.postTo" [commentId]="mappedComment.commentId"
+                  (deleted)="getProfile()"></app-post>
       }
     </p-tabPanel>
   </p-tabView>
@@ -74,55 +80,55 @@
   <form [formGroup]="editDataForm">
     <div class="image-container background-container">
       <div
-        class="image background-image"
         [style.background-image]="'url(' + (backgroundImageUrl ? backgroundImageUrl : 'http://localhost:8080/defaults/background.png') + ')'"
+        class="image background-image"
       >
-        <p-button icon="pi pi-camera" [rounded]="true" [text]="true" class="icon-button"
-                  (click)="changeBackground($event)"><input type="file" class="file-input" accept="image/*"
-                                                            (change)="changeBackground($event)"/></p-button>
+        <p-button (click)="changeBackground($event)" [rounded]="true" [text]="true" class="icon-button"
+                  icon="pi pi-camera"><input (change)="changeBackground($event)" accept="image/*" class="file-input"
+                                                            type="file"/></p-button>
 
       </div>
     </div>
 
     <div class="image-container profile-picture-container -mt-8 ml-2 mb-4">
       <div
-        class="image profile-picture-image"
         [style.background-image]="'url(' + (profileImageUrl ? profileImageUrl : 'http://localhost:8080/defaults/profile.png') + ')'"
+        class="image profile-picture-image"
       >
-        <p-button icon="pi pi-camera" [rounded]="true" [text]="true" class="icon-button"
-                  (click)="changeProfilePicture($event)"><input type="file" class="file-input" accept="image/*"
-                                                                (change)="changeProfilePicture($event)"/></p-button>
+        <p-button (click)="changeProfilePicture($event)" [rounded]="true" [text]="true" class="icon-button"
+                  icon="pi pi-camera"><input (change)="changeProfilePicture($event)" accept="image/*" class="file-input"
+                                                                type="file"/></p-button>
       </div>
     </div>
     <div class="ml-5 mr-5">
       <div class="flex align-items-center gap-3 mb-3">
-        <label for="profileName" class="font-semibold w-7rem">Nazwa profilu</label>
+        <label class="font-semibold w-7rem" for="profileName">Nazwa profilu</label>
         <input
-          pInputText id="profileName" formControlName="profileName"
-          class="w-20rem" autocomplete="off"/>
+          autocomplete="off" class="w-20rem" formControlName="profileName"
+          id="profileName" pInputText/>
       </div>
       <div class="flex align-items-center gap-3 mb-3">
-        <label for="description" class="font-semibold w-7rem">Opis profilu</label>
-        <textarea pInputTextarea id="description" maxlength="150"
-                  rows="5" formControlName="description"
-                  class="w-20rem" autocomplete="off"></textarea>
+        <label class="font-semibold w-7rem" for="description">Opis profilu</label>
+        <textarea autocomplete="off" class="w-20rem" formControlName="description"
+                  id="description" maxlength="150"
+                  pInputTextarea rows="5"></textarea>
       </div>
       <div class="flex align-items-center gap-3 mb-3">
         <label class="font-semibold w-7rem">Płeć</label>
         <p-dropdown
           [options]="genders"
-          formControlName="gender"
           appendTo="body"
-          optionValue="code"
-          optionLabel="value"/>
+          formControlName="gender"
+          optionLabel="value"
+          optionValue="code"/>
       </div>
     </div>
   </form>
-  <ng-template pTemplate="footer" class="flex align-items-center justify-content-cente">
+  <ng-template class="flex align-items-center justify-content-cente" pTemplate="footer">
     <p-button
-      label="Zapisz"
-      [text]="true"
       (click)="editProfile()"
+      [text]="true"
+      label="Zapisz"
     />
   </ng-template>
 </p-dialog>
