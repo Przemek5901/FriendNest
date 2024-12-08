@@ -1,0 +1,38 @@
+.chats-header {
+  border-bottom: 1px solid #5e5e5e;
+}
+
+.grid {
+  margin: 0;
+}
+
+.icon {
+  width: 55px;
+  height: 55px;
+  border-radius: 50%;
+  margin-right: 10px;
+}
+
+.chat-container {
+  border-bottom: 1px solid #5e5e5e;
+  height: 5.8rem;
+  transition: background-color 0.3s ease;
+  cursor: pointer;
+  box-sizing: border-box;
+  border-left: 5px solid black;
+}
+
+.chat-container:hover {
+  background-color: #151515;
+}
+
+.selected-chat {
+  border-left: 5px solid var(--primary-color);
+  box-sizing: border-box;
+}
+
+::ng-deep {
+  .p-image-preview-container>img {
+    border-radius: 10px;
+  }
+}

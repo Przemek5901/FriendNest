@@ -49,6 +49,13 @@ export const routes: Routes = [
             (m) => m.SearchComponent,
           ),
       },
+      {
+        path: 'messages',
+        loadComponent: () =>
+          import('./components/main-layout/messages/messages.component').then(
+            (m) => m.MessagesComponent,
+          ),
+      },
     ],
   },
 ];

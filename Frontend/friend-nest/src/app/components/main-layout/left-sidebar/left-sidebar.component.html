@@ -15,13 +15,15 @@
       <p-button [routerLink]="['main-page']" [text]="true" class="bar-button"
                 icon="pi pi-home" iconPos="left" label="Główna" size="large"/>
     </div>
-    <div class="mb-2" [routerLink]="['search']">
-      <p-button [text]="true" class="bar-button" icon="pi pi-search"
-                iconPos="left" label="Przeglądaj" size="large"/>
+    <div class="mb-2">
+      <p-button [routerLink]="['search']" [text]="true" class="bar-button"
+                icon="pi pi-search" iconPos="left" label="Przeglądaj"
+                size="large"/>
     </div>
     <div class="mb-2">
-      <p-button [text]="true" class="bar-button" icon="pi pi-envelope"
-                iconPos="left" label="Wiadomości" size="large"/>
+      <p-button [routerLink]="['messages']" [text]="true" class="bar-button"
+                icon="pi pi-envelope" iconPos="left" label="Wiadomości"
+                size="large"/>
     </div>
     <div class="mb-2">
       <p-button (click)="openProfile()" [text]="true" class="bar-button" icon="pi pi-user"
@@ -33,8 +35,8 @@
                 iconPos="left" label="Wyloguj się" size="large"/>
     </div>
     <div class="mb-4">
-      <p-button [rounded]="true" class="full-button"
-                label="Opublikuj wpis"/>
+      <p-button (click)="navigateToMainPage()" [rounded]="true"
+                class="full-button" label="Opublikuj wpis"/>
     </div>
   </div>
   <div class="profile-card">

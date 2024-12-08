@@ -1,4 +1,4 @@
-import { Component, OnInit, ViewEncapsulation } from '@angular/core';
+import { Component, OnInit } from '@angular/core';
 import {
   CommonModule,
   Location,
@@ -222,5 +222,13 @@ export class ProfileComponent extends BaseComponent implements OnInit {
 
   goBack(): void {
     this.location.back();
+  }
+
+  sendMessage(user: User | undefined) {
+    if (user) {
+      this.router.navigate(['messages'], {
+        queryParams: { userId: user.userId },
+      });
+    }
   }
 }

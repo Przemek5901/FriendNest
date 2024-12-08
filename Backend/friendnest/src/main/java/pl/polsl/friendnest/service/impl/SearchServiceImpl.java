@@ -35,14 +35,14 @@ public class SearchServiceImpl implements SearchService {
 
     @Override
     public SearchResults searchAll(String keyword, Long userId) {
-        if(!StringUtils.hasLength(keyword)) {
+        if(!StringUtils.hasLength(keyword) || userId == null) {
             throw new CustomException("Błąd wyszukiwania");
         }
 
         User user = userRepository.findByUserId(userId)
                 .orElseThrow(CustomException::new);
 
-        List<User> users = userRepository.searchUsersByKeyword(keyword);
+        List<User> users = userRepository.searchUsersByKeyword(keyword, null);
         List<Post> posts = postRepository.searchPosts(keyword);
         List<PostTo> postToList = new ArrayList<>();
 
@@ -54,5 +54,14 @@ public class SearchServiceImpl implements SearchService {
         });
 
         return SearchResults.builder().posts(postToList).users(users).build();
+    }
+
+    @Override
+    public List<User> searchUsers(String keyword, Long userId) {
+        if(!StringUtils.hasLength(keyword)) {
+            throw new CustomException("Błąd wyszukiwania");
+        }
+
+        return userRepository.searchUsersByKeyword(keyword, userId);
     }
 }

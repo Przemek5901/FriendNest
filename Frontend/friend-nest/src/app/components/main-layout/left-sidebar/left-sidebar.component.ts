@@ -1,7 +1,7 @@
 import { Component } from '@angular/core';
 import { NgOptimizedImage } from '@angular/common';
 import { ButtonModule } from 'primeng/button';
-import {Router, RouterLink} from '@angular/router';
+import { Router, RouterLink } from '@angular/router';
 import { ProfileCardComponent } from './profile-card/profile-card.component';
 import { AuthService } from '../../../services/auth.service';
 import { BaseComponent } from '../../../utils/base-component';
@@ -28,5 +28,11 @@ export class LeftSidebarComponent extends BaseComponent {
 
   openProfile(): void {
     this.router.navigate(['profile', this.getUser().login]);
+  }
+
+  navigateToMainPage(): void {
+    this.router.navigate(['/main-page'], {
+      queryParams: { focus: true },
+    });
   }
 }

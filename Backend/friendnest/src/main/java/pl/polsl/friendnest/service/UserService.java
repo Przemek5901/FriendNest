@@ -4,4 +4,5 @@ import pl.polsl.friendnest.model.User;
 
 public interface UserService {
     User getUserById(Long userId);
+
 }

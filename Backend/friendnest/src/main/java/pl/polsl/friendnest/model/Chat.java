@@ -17,14 +17,15 @@ import java.time.OffsetDateTime;
 public class Chat {
     @Id
     @Column(name = "\"CHAT_ID\"", nullable = false)
+    @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Integer chatId;
 
-    @ManyToOne(fetch = FetchType.LAZY, optional = false)
+    @ManyToOne(fetch = FetchType.EAGER, optional = false)
     @OnDelete(action = OnDeleteAction.CASCADE)
     @JoinColumn(name = "\"USER_1\"", nullable = false)
     private User user1;
 
-    @ManyToOne(fetch = FetchType.LAZY, optional = false)
+    @ManyToOne(fetch = FetchType.EAGER, optional = false)
     @OnDelete(action = OnDeleteAction.CASCADE)
     @JoinColumn(name = "\"USER_2\"", nullable = false)
     private User user2;

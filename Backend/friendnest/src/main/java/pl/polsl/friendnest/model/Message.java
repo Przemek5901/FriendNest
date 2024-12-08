@@ -17,14 +17,15 @@ import java.time.OffsetDateTime;
 public class Message {
     @Id
     @Column(name = "\"MESSAGE_ID\"", nullable = false)
+    @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Integer messageId;
 
-    @ManyToOne(fetch = FetchType.LAZY, optional = false)
+    @ManyToOne(fetch = FetchType.EAGER, optional = false)
     @OnDelete(action = OnDeleteAction.CASCADE)
     @JoinColumn(name = "\"CHAT_ID\"", nullable = false)
     private Chat chat;
 
-    @ManyToOne(fetch = FetchType.LAZY, optional = false)
+    @ManyToOne(fetch = FetchType.EAGER, optional = false)
     @OnDelete(action = OnDeleteAction.CASCADE)
     @JoinColumn(name = "\"SENDER_ID\"", nullable = false)
     private User sender;
@@ -37,5 +38,8 @@ public class Message {
 
     @Column(name = "\"CREATED_AT\"", nullable = false)
     private OffsetDateTime createdAt;
+
+    @Transient
+    private String imageBase64;
 
 }
