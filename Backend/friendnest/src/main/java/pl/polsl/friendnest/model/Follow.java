@@ -19,13 +19,13 @@ public class Follow {
     private FollowId id;
 
     @MapsId("followerId")
-    @ManyToOne(fetch = FetchType.LAZY, optional = false)
+    @ManyToOne(fetch = FetchType.EAGER, optional = false)
     @OnDelete(action = OnDeleteAction.CASCADE)
     @JoinColumn(name = "\"FOLLOWER_ID\"", nullable = false)
     private User follower;
 
     @MapsId("followedId")
-    @ManyToOne(fetch = FetchType.LAZY, optional = false)
+    @ManyToOne(fetch = FetchType.EAGER, optional = false)
     @OnDelete(action = OnDeleteAction.CASCADE)
     @JoinColumn(name = "\"FOLLOWED_ID\"", nullable = false)
     private User followed;

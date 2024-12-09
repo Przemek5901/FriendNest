@@ -4,7 +4,7 @@ import { PostService } from '../../../services/post.service';
 import { PostDetails } from '../../../models/response/PostDetails';
 import { GetPostDetails } from '../../../models/request/GetPostDetails';
 import { User } from '../../../models/User';
-import { ActivatedRoute } from '@angular/router';
+import {ActivatedRoute, RouterLink} from '@angular/router';
 import { PostComponent } from '../main-page/post/post.component';
 import { AsyncPipe, NgClass, NgIf, NgOptimizedImage } from '@angular/common';
 import { Button } from 'primeng/button';
@@ -32,6 +32,7 @@ import { Post } from '../../../models/Post';
     AddPostComponent,
     ToastModule,
     NgIf,
+    RouterLink,
   ],
   templateUrl: './post-details.component.html',
   styleUrl: './post-details.component.scss',

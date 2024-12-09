@@ -29,8 +29,12 @@
       <p-button label="Edytuj profil" class="edit-button" [rounded]="true" [outlined]="true"
                 (click)="editData()"></p-button>
     } @else {
-      <p-button label="Wiadomość" [rounded]="true" [outlined]="true" class="message-button mr-2" icon="pi pi-envelope"
-                iconPos="right" (click)="sendMessage(profile.user)"/>
+      <div class="ml-auto mt-10 flex align-content-end flex-wrap">
+        <p-button [rounded]="true" [outlined]="true" class="mr-2 " icon="pi pi-envelope"
+                  iconPos="right" (click)="sendMessage(profile.user)"/>
+        <p-button [rounded]="true" [outlined]="true" class="mr-2" [severity]="isFollowed ? 'danger' : 'primary'"
+                  [label]="isFollowed ? 'Przestań obserwować' : 'Obserwuj'" (click)="switchFollow()"/>
+      </div>
     }
   </div>
 
@@ -45,10 +49,10 @@
       <p class="text-400 mt-0 ml-1">Dołączył/a {{ profile.user?.createdAt | date: 'LLLL yyyy' }}</p>
     </div>
     <div class="flex -mt-2">
-      <p class="text-400 mt-0 ml-1">
+      <p (click)="openFollowers(true, true)" class="text-400 mt-0 ml-1 followers-container">
         <span class="text-white font-bold">{{ profile.followersCount }}</span> Obserwowanych
       </p>
-      <p class="text-400 mt-0 ml-4">
+      <p (click)="openFollowers(false, true)" class="text-400 mt-0 ml-4 followers-container">
         <span class="text-white font-bold">{{ profile.followingCount }}</span> Obserwujących
       </p>
     </div>
@@ -71,6 +75,7 @@
   </p-tabView>
 </div>
 
+<!--profile settings dialog-->
 <p-dialog
   [(visible)]="visible"
   [modal]="true">
@@ -85,7 +90,7 @@
       >
         <p-button (click)="changeBackground($event)" [rounded]="true" [text]="true" class="icon-button"
                   icon="pi pi-camera"><input (change)="changeBackground($event)" accept="image/*" class="file-input"
-                                                            type="file"/></p-button>
+                                             type="file"/></p-button>
 
       </div>
     </div>
@@ -97,7 +102,7 @@
       >
         <p-button (click)="changeProfilePicture($event)" [rounded]="true" [text]="true" class="icon-button"
                   icon="pi pi-camera"><input (change)="changeProfilePicture($event)" accept="image/*" class="file-input"
-                                                                type="file"/></p-button>
+                                             type="file"/></p-button>
       </div>
     </div>
     <div class="ml-5 mr-5">
@@ -131,4 +136,44 @@
       label="Zapisz"
     />
   </ng-template>
+</p-dialog>
+
+<!--followers dialog-->
+<p-dialog
+  [(visible)]="visibleFollowers"
+  [modal]="true"
+  [style]="{ width: '30rem'}"
+  class="dialog">
+  <ng-template pTemplate="header">
+    <span class="ml-5 font-bold text-2xl">{{ followerModalHeader }}</span>
+  </ng-template>
+  @if (followerToList.length > 0) {
+    @for (followTo of followerToList; track followTo.user.userId) {
+      <div class="user grid h-6rem flex align-content-center flex-wrap">
+        <div class="col-3">
+          <div [routerLink]="['/profile', followTo.user.login]">
+            <img
+              [ngSrc]="followTo.user.profileImageUrl ? followTo.user.profileImageUrl : 'http://localhost:8080/defaults/profile.png'"
+              class="profile-picture cursor-pointer" height="70"
+              width="70">
+          </div>
+        </div>
+        <div class="col-5">
+          <div class="white-space-nowrap overflow-hidden text-overflow-ellipsis mt-3 ml-2">
+            <p class="text-xl w-10 font-bold profile-name mt-2">{{ followTo.user.profileName }}</p>
+            <p class="text-m w-10 -mt-3 text-400">{{ '@' + followTo.user.login }}</p>
+          </div>
+        </div>
+        @if (user.userId !== followTo.user.userId) {
+          <div class="col-4 flex align-content-center flex-wrap">
+            <p-button [rounded]="true" [outlined]="true" [severity]="followTo.isFollowing ? 'danger' : 'primary'"
+                      [label]="followTo.isFollowing ? 'Przestań obserwować' : 'Obserwuj'"
+                      (click)="switchFollow(followTo.user.userId)"/>
+          </div>
+        }
+      </div>
+    }
+  } @else {
+    <span class="text-400 text-xl">{{ isFollowers ? 'Brak obserwowanych' : 'Brak obserwujących' }}</span>
+  }
 </p-dialog>

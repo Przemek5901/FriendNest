@@ -13,7 +13,7 @@
   <div>
     <div class="grid">
       <div class="col-2 mt-2">
-        <div class="image-container ml-1">
+        <div [routerLink]="['/profile', postDetails.postTo.post.user.login]" class="image-container ml-1">
           <img
             [ngSrc]="postDetails.postTo.post.user.profileImageUrl ? postDetails.postTo.post.user.profileImageUrl : 'http://localhost:8080/defaults/profile.png'"
             height="80"
@@ -26,7 +26,7 @@
           <p class="text-xl text-400 ml-1 -mt-3">{{ '@' + postDetails.postTo.post.user.login }}</p>
         </div>
       </div>
-      @if(postDetails.postTo.post.user.userId === user.userId){
+      @if (postDetails.postTo.post.user.userId === user.userId) {
         <div class="col-3 mt-3">
           <p-button label="Usuń post" [outlined]="true" severity="danger" (click)="deltePost()"/>
         </div>
@@ -42,7 +42,8 @@
       <span>{{ postDetails.postTo.post.content }}</span>
     </div>
     <hr class="ml-3 mr-3 mt-3">
-    <div class="block h-3rem justify-content-between flex mt-1 flex align-items-center justify-content-center mr-6 ml-5">
+    <div
+      class="block h-3rem justify-content-between flex mt-1 flex align-items-center justify-content-center mr-6 ml-5">
       <p-button
         (click)="toggleButton(1)"
         [disabled]="true"
@@ -100,7 +101,8 @@
     </div>
     <hr class="ml-3 mr-3 mt-2">
     <div>
-      <app-add-post [isComment]="true" [postId]="postDetails.postTo.post.postId"  (commentAdded)="getPostDetails()"></app-add-post>
+      <app-add-post (commentAdded)="getPostDetails()" [isComment]="true"
+                    [postId]="postDetails.postTo.post.postId"></app-add-post>
     </div>
     <div>
       @for (mappedComment of mappedComments; track mappedComment.commentId) {
