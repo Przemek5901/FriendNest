@@ -20,7 +20,7 @@ import {
 import { DropdownModule } from 'primeng/dropdown';
 import { InputTextModule } from 'primeng/inputtext';
 import { SpinnerComponent } from '../../../utils/spinner/spinner.component';
-import { ActivatedRoute, Router } from '@angular/router';
+import { ActivatedRoute, Router, RouterLink } from '@angular/router';
 import { ProfileService } from '../../../services/profile.service';
 import { Profile } from '../../../models/Profile';
 import { TabViewModule } from 'primeng/tabview';
@@ -35,6 +35,10 @@ import { PostComponent } from '../main-page/post/post.component';
 import { PostTo } from '../../../models/response/PostTo';
 import { mapCommentToPost } from '../../../utils/PostDTO';
 import { AuthService } from '../../../services/auth.service';
+import { FollowService } from '../../../services/follow.service';
+import { Follow } from '../../../models/Follow';
+import { FollowerTo } from '../../../models/response/FollowerTo';
+import { FollowerToRequest } from '../../../models/request/FollowerToRequest';
 
 @Component({
   selector: 'app-profile',
@@ -56,6 +60,7 @@ import { AuthService } from '../../../services/auth.service';
     InputTextareaModule,
     ToastModule,
     PostComponent,
+    RouterLink,
   ],
   providers: [MessageService],
   templateUrl: './profile.component.html',
@@ -67,8 +72,12 @@ export class ProfileComponent extends BaseComponent implements OnInit {
   genders: Dictionary[] = genderList;
   profileImageUrl: string | ArrayBuffer | null = '';
   backgroundImageUrl: string | ArrayBuffer | null = '';
-
+  isFollowed: boolean = false;
+  followerToList: FollowerTo[] = [];
   visible: boolean = false;
+  visibleFollowers: boolean = false;
+  followerModalHeader: string = '';
+  isFollowers: boolean = false;
   mappedComments: { postTo: PostTo; commentId: number }[] = [];
 
   editDataForm: FormGroup;
@@ -81,6 +90,7 @@ export class ProfileComponent extends BaseComponent implements OnInit {
     private router: Router,
     private authService: AuthService,
     private location: Location,
+    private followService: FollowService,
   ) {
     super();
     this.editDataForm = this.fb.group({
@@ -93,8 +103,32 @@ export class ProfileComponent extends BaseComponent implements OnInit {
   }
 
   ngOnInit() {
+    this.spinnerService.show();
     this.getProfile();
     this.subscribeToLoginChanges();
+  }
+
+  private getIsFollowedByLoggedUser(): void {
+    if (
+      this?.user?.userId &&
+      this.profile.user?.userId &&
+      this?.user?.userId !== this.profile.user?.userId
+    ) {
+      this.followService
+        .isFollowedByLoggedUser(this.user.userId, this.profile.user?.userId)
+        .pipe(this.autoUnsubscribe())
+        .subscribe({
+          next: (value) => this.respondToIsFollowedByLoggedUser(value),
+          error: (error) => this.hadleHttpError(error),
+        });
+    }
+  }
+
+  private respondToIsFollowedByLoggedUser(
+    isFollowedByLoggedUser: boolean,
+  ): void {
+    this.isFollowed = isFollowedByLoggedUser;
+    this.spinnerService.hide();
   }
 
   private subscribeToLoginChanges(): void {
@@ -141,6 +175,7 @@ export class ProfileComponent extends BaseComponent implements OnInit {
     } else {
       this.mappedComments = [];
     }
+    this.getIsFollowedByLoggedUser();
   }
 
   changeProfilePicture(event: any) {
@@ -229,6 +264,58 @@ export class ProfileComponent extends BaseComponent implements OnInit {
       this.router.navigate(['messages'], {
         queryParams: { userId: user.userId },
       });
+    }
+  }
+
+  switchFollow(selectedUserId?: number): void {
+    if (this.user?.userId && this.profile.user?.userId) {
+      this.followService
+        .switchFollow(
+          this.user.userId,
+          selectedUserId ? selectedUserId : this.profile.user?.userId,
+        )
+        .pipe(this.autoUnsubscribe())
+        .subscribe({
+          next: (value) => this.respondToSwitchFollow(value),
+          error: (err) => this.hadleHttpError(err),
+        });
+    }
+  }
+
+  private respondToSwitchFollow(follow: Follow): void {
+    this.isFollowed = !!follow;
+    this.getProfile();
+    this.openFollowers(this.isFollowers, false);
+  }
+
+  openFollowers(isFollowers: boolean, closeModal: boolean): void {
+    this.isFollowers = isFollowers;
+    if (this?.user?.userId && this.profile.user?.userId) {
+      const followerToRequest: FollowerToRequest = {
+        searchedUserId: this.profile.user?.userId,
+        loggedUserId: this?.user?.userId,
+        isFollower: this.isFollowers,
+      };
+      this.followService
+        .getFollowerList(followerToRequest)
+        .pipe(this.autoUnsubscribe())
+        .subscribe({
+          next: (value) => this.respondToGetFollowerList(value, closeModal),
+          error: (err) => this.hadleHttpError(err),
+        });
+    }
+  }
+
+  private respondToGetFollowerList(
+    followerToList: FollowerTo[],
+    closeModal: boolean,
+  ) {
+    this.followerToList = followerToList;
+    this.followerModalHeader = this.isFollowers
+      ? 'Profile obserwujące'
+      : 'Obserwowane profile';
+    if (closeModal) {
+      this.visibleFollowers = !this.visibleFollowers;
     }
   }
 }

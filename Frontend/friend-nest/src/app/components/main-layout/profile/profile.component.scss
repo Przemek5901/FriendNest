@@ -7,7 +7,7 @@
   overflow-x: hidden;
 }
 
-.profile-picture{
+.profile-picture {
   margin: 10px 0 0 20px;
   border-radius: 50%;
   border: 1px solid black;
@@ -21,10 +21,16 @@
   margin: 6rem 0 0 17rem !important;
 }
 
+.follow-button {
+  margin-top: 6rem;
+  margin-left: 10px;
+}
+
 ::ng-deep {
   .p-dialog {
     background-color: black;
     color: white;
+    box-shadow: 0 0 10px #1e1e1e;
 
     &-header,
     &-content,
@@ -45,7 +51,7 @@
     font-size: 29px;
   }
 
-  .profile-icons .pi{
+  .profile-icons .pi {
     font-size: 17px;
     color: white;
     font-weight: bold;
@@ -141,4 +147,10 @@
   background-color: #151515;
 }
 
+.followers-container {
+  cursor: pointer;
+}
 
+.followers-container:hover {
+  text-decoration: underline;
+}
