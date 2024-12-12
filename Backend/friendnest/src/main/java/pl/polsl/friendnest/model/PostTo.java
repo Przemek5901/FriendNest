@@ -10,5 +10,9 @@ import pl.polsl.friendnest.model.response.UserInteractions;
 @AllArgsConstructor
 public class PostTo {
     private Post post;
+    private Boolean isReposted;
+    private Boolean isQuoted;
+    private User reposter;
+    private PostTo quotedPost;
     private UserInteractions userInteractions;
 }

@@ -32,7 +32,8 @@
 
 <p-dialog
   [(visible)]="visible"
-  [modal]="true">
+  [modal]="true"
+  appendTo="body">
   <ng-template pTemplate="header">
     <span class="ml-5 font-bold text-2xl">Zarejestruj się</span>
   </ng-template>
@@ -55,7 +56,7 @@
         <label for="password" class="font-semibold w-7rem">Hasło</label>
         <input
           pInputText id="password" formControlName="password"
-          class="w-20rem" autocomplete="off"/>
+          class="w-20rem" autocomplete="off" type="password"/>
       </div>
       <div class="flex align-items-center gap-3 mb3">
         <label class="font-semibold w-7rem">Płeć</label>
@@ -63,6 +64,7 @@
           [options]="genders"
           formControlName="gender"
           appendTo="body"
+          class="category-dropdown"
           optionLabel="value"/>
       </div>
     </div>

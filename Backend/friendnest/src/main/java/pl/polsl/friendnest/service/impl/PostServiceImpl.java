@@ -8,8 +8,10 @@ import pl.polsl.friendnest.model.*;
 import pl.polsl.friendnest.model.request.AddPostRequest;
 import pl.polsl.friendnest.model.request.GetPostDetailsRequest;
 import pl.polsl.friendnest.model.request.GetPostsRequest;
+import pl.polsl.friendnest.model.request.QuotePostRequest;
 import pl.polsl.friendnest.model.response.PostDetails;
 import pl.polsl.friendnest.repository.CommentRepository;
+import pl.polsl.friendnest.repository.InteractionRepository;
 import pl.polsl.friendnest.repository.PostRepository;
 import pl.polsl.friendnest.repository.UserRepository;
 import pl.polsl.friendnest.service.FileService;
@@ -17,9 +19,7 @@ import pl.polsl.friendnest.service.InteractionService;
 import pl.polsl.friendnest.service.PostService;
 
 import java.time.OffsetDateTime;
-import java.util.ArrayList;
-import java.util.LinkedList;
-import java.util.List;
+import java.util.*;
 
 @Service
 public class PostServiceImpl implements PostService {
@@ -31,12 +31,15 @@ public class PostServiceImpl implements PostService {
     private final InteractionService interactionService;
     private final CommentRepository commentRepository;
 
-    public PostServiceImpl(PostRepository postRepository, UserRepository userRepository, FileService fileService, InteractionService interactionService, CommentRepository commentRepository) {
+    private final InteractionRepository interactionRepository;
+
+    public PostServiceImpl(PostRepository postRepository, UserRepository userRepository, FileService fileService, InteractionService interactionService, CommentRepository commentRepository, InteractionRepository interactionRepository) {
         this.postRepository = postRepository;
         this.userRepository = userRepository;
         this.fileService = fileService;
         this.interactionService = interactionService;
         this.commentRepository = commentRepository;
+        this.interactionRepository = interactionRepository;
     }
 
     @Override
@@ -81,28 +84,66 @@ public class PostServiceImpl implements PostService {
         User user = userRepository.findByUserId(getPostsRequest.getUserId())
                 .orElseThrow(CustomException::new);
 
-
         Specification<Post> specification = Specification
                 .where(PostSpecification.userNot(user))
                 .and(PostSpecification.category(Integer.decode(getPostsRequest.getCategory())))
                 .and(PostSpecification.sortByCriteria(Integer.decode(getPostsRequest.getSortOption())));
 
-
         List<Post> posts = postRepository.findAll(specification);
-
+        List<Interaction> reposts = postRepository.getInteractionsByTypeAndUserCondition(4L, user, false);
+        List<Interaction> quotedPosts = postRepository.getInteractionsByTypeAndUserCondition(5L, user, false);
 
         List<PostTo> postToList = new LinkedList<>();
+        Set<Integer> processedPostIds = new HashSet<>();
+
+        for (Interaction interaction : quotedPosts) {
+            PostTo postTo = new PostTo();
+            PostTo quotedPost = new PostTo();
+            quotedPost.setPost(interaction.getPost());
+            quotedPost.setIsReposted(false);
+            quotedPost.setIsQuoted(false);
+            quotedPost.setReposter(null);
+            quotedPost.setUserInteractions(interactionService.getUserInteractions(user, null, interaction.getPost()));
+            postTo.setIsReposted(false);
+            postTo.setIsQuoted(true);
+            postTo.setReposter(null);
+            postTo.setPost(interaction.getNewPost());
+            postTo.setQuotedPost(quotedPost);
+            postTo.setUserInteractions(interactionService.getUserInteractions(user, null, interaction.getNewPost()));
+            postToList.add(postTo);
+            processedPostIds.add(interaction.getNewPost().getPostId());
+        }
+
+        for (Interaction interaction : reposts) {
+            PostTo postTo = new PostTo();
+            postTo.setPost(interaction.getPost());
+            postTo.setIsReposted(true);
+            postTo.setIsQuoted(false);
+            postTo.setReposter(interaction.getUser());
+            postTo.setQuotedPost(null);
+            postTo.setUserInteractions(interactionService.getUserInteractions(user, null, interaction.getPost()));
+            postToList.add(postTo);
+            processedPostIds.add(interaction.getPost().getPostId());
+        }
 
         for (Post post : posts) {
+            if (processedPostIds.contains(post.getPostId())) {
+                continue;
+            }
             PostTo postTo = new PostTo();
             postTo.setPost(post);
-
+            postTo.setIsReposted(false);
+            postTo.setIsQuoted(false);
+            postTo.setReposter(null);
+            postTo.setQuotedPost(null);
             postTo.setUserInteractions(interactionService.getUserInteractions(user, null, post));
             postToList.add(postTo);
+            processedPostIds.add(post.getPostId());
         }
 
         return postToList;
     }
+
 
     @Override
     public List<PostTo> getUserPosts(Long userId) {
@@ -112,16 +153,54 @@ public class PostServiceImpl implements PostService {
         List<PostTo> postToList = new ArrayList<>();
         List<Post> userPosts = postRepository.getPostsByUser(user);
 
+        List<Interaction> reposts = postRepository.getInteractionsByTypeAndUserCondition(4L, user, true);
+        List<Interaction> quotedPosts = postRepository.getInteractionsByTypeAndUserCondition(5L, user, true);
+
+        Set<Integer> processedPostIds = new HashSet<>();
+
+        for (Interaction interaction : quotedPosts) {
+            PostTo postTo = new PostTo();
+            PostTo quotedPost = new PostTo();
+            quotedPost.setPost(interaction.getPost());
+            quotedPost.setIsReposted(false);
+            quotedPost.setIsQuoted(false);
+            quotedPost.setReposter(null);
+            quotedPost.setUserInteractions(interactionService.getUserInteractions(user, null, interaction.getPost()));
+            postTo.setIsReposted(false);
+            postTo.setIsQuoted(true);
+            postTo.setReposter(null);
+            postTo.setPost(interaction.getNewPost());
+            postTo.setQuotedPost(quotedPost);
+            postTo.setUserInteractions(interactionService.getUserInteractions(user, null, interaction.getNewPost()));
+            postToList.add(postTo);
+            processedPostIds.add(interaction.getNewPost().getPostId());
+        }
+
+        for (Interaction interaction : reposts) {
+            PostTo postTo = new PostTo();
+            postTo.setPost(interaction.getPost());
+            postTo.setIsReposted(true);
+            postTo.setReposter(interaction.getUser());
+            postTo.setQuotedPost(null);
+            postTo.setIsQuoted(false);
+            postTo.setUserInteractions(interactionService.getUserInteractions(user, null, interaction.getPost()));
+            processedPostIds.add(interaction.getPost().getPostId());
+            postToList.add(postTo);
+        }
 
         if (!userPosts.isEmpty()) {
             for (Post post : userPosts) {
+                if (processedPostIds.contains(post.getPostId())) {
+                    continue;
+                }
                 PostTo postTo = new PostTo();
-
                 postTo.setPost(post);
                 postTo.setUserInteractions(interactionService.getUserInteractions(user, null, post));
                 postToList.add(postTo);
             }
         }
+
+        postToList.sort(Comparator.comparing(postTo -> postTo.getPost().getCreatedAt(), Comparator.reverseOrder()));
 
         return postToList;
     }
@@ -159,8 +238,35 @@ public class PostServiceImpl implements PostService {
         User user = userRepository.findByUserId(getPostDetailsRequest.getUserId())
                 .orElseThrow(CustomException::new);
 
+        User reposter = new User();
+
+        if (getPostDetailsRequest.getReposterId() != null) {
+            reposter = userRepository.findByUserId(getPostDetailsRequest.getReposterId()).orElse(null);
+        }
+
         PostTo postTo = new PostTo();
         postTo.setPost(post);
+
+        if (reposter != null && reposter.getUserId() != null) {
+            postTo.setReposter(reposter);
+            postTo.setIsReposted(true);
+        }
+
+        Post quotedPost = new Post();
+
+        if (getPostDetailsRequest.getQuotedPostId() != null) {
+            quotedPost = postRepository.getPostsByPostId(getPostDetailsRequest.getQuotedPostId()).orElse(null);
+        }
+
+        if (quotedPost != null && quotedPost.getPostId() != null) {
+            postTo.setIsQuoted(true);
+            PostTo quotedPostTo = new PostTo();
+            quotedPostTo.setPost(quotedPost);
+            quotedPostTo.setUserInteractions(interactionService.getUserInteractions(user, null, quotedPost));
+            quotedPostTo.setIsReposted(false);
+            quotedPostTo.setIsQuoted(false);
+            postTo.setQuotedPost(quotedPostTo);
+        }
 
         postTo.setUserInteractions(interactionService.getUserInteractions(user, null, post));
 
@@ -187,6 +293,41 @@ public class PostServiceImpl implements PostService {
 
         postRepository.delete(post);
         return post;
+    }
+
+    @Override
+    public Post quotePost(QuotePostRequest quotePostRequest) {
+        if (quotePostRequest.getUserId() == null || quotePostRequest.getPostId() == null &&
+                StringUtils.hasLength(quotePostRequest.getContent())) {
+            throw new CustomException();
+        }
+
+        User user = userRepository.findByUserId(quotePostRequest.getUserId())
+                .orElseThrow(CustomException::new);
+
+        Post post = postRepository.findPostByPostId(quotePostRequest.getPostId())
+                .orElseThrow(CustomException::new);
+
+        var postToSave = Post.builder()
+                .user(user)
+                .category(null)
+                .content(quotePostRequest.getContent())
+                .createdAt(OffsetDateTime.now())
+                .build();
+
+        postRepository.save(postToSave);
+
+        var interaction = Interaction.builder()
+                .interactionType(5)
+                .createdAt(OffsetDateTime.now())
+                .post(post)
+                .newPost(postToSave)
+                .user(user)
+                .build();
+
+        interactionRepository.save(interaction);
+
+        return postToSave;
     }
 
 }

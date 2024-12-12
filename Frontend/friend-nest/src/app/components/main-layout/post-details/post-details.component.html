@@ -10,6 +10,13 @@
       </div>
     </div>
   </div>
+  @if (postDetails.postTo.isReposted) {
+    <div class="full-w h-1rem ml-3 pt-2 pb-1 repost-text mt-2 mb-2" [routerLink]="['/profile', postDetails.postTo.reposter?.login]"
+         (click)="$event.stopPropagation()">
+      <i class="pi pi-sync"></i> <span
+      class="text-xl font-medium">{{ ' ' + postDetails.postTo.reposter?.profileName + ' podał post dalej' }}</span>
+    </div>
+  }
   <div>
     <div class="grid">
       <div class="col-2 mt-2">
@@ -41,6 +48,11 @@
       }
       <span>{{ postDetails.postTo.post.content }}</span>
     </div>
+    @if (postDetails.postTo.isQuoted && postDetails.postTo.quotedPost) {
+      <div class="scale">
+        <app-post [postTo]="postDetails.postTo.quotedPost"></app-post>
+      </div>
+    }
     <hr class="ml-3 mr-3 mt-3">
     <div
       class="block h-3rem justify-content-between flex mt-1 flex align-items-center justify-content-center mr-6 ml-5">
@@ -79,7 +91,7 @@
 
       <p-button
         (click)="toggleButton(4)"
-        [disabled]="buttonStates[4].disabled"
+        [disabled]="buttonStates[4].disabled || postDetails.postTo.isQuoted || postDetails.postTo.isReposted"
         [ngClass]="postDetails.postTo.userInteractions.isReposted ? 'activated-button' : 'default-button'"
         [rounded]="true"
         [text]="true"
@@ -89,8 +101,8 @@
       <span class="text-400 interaction-number">{{ postDetails.postTo.userInteractions.repostsNumber }}</span>
 
       <p-button
-        (click)="toggleButton(5)"
-        [disabled]="buttonStates[5].disabled"
+        (click)="openQuoteModal($event)"
+        [disabled]="buttonStates[5].disabled || postDetails.postTo.isQuoted || postDetails.postTo.isReposted"
         [ngClass]="postDetails.postTo.userInteractions.isQuoted ? 'activated-button' : 'default-button'"
         [rounded]="true"
         [text]="true"
@@ -111,3 +123,34 @@
     </div>
   </div>
 </div>
+
+<p-dialog
+  [(visible)]="visible"
+  [style]="{ width: '40rem'}"
+  appendTo="body">
+  <ng-template pTemplate="header">
+    <span class="ml-5 font-bold text-2xl">Cytuj post</span>
+  </ng-template>
+  @if (postDetails.postTo) {
+    <app-post [postTo]="postDetails.postTo" [isNested]="true"></app-post>
+  }
+  <div class="flex align-items-center justify-content-center mt-2">
+      <textarea
+        #textArea
+        [(ngModel)]="quoteContent"
+        class="taPost"
+        cols="30"
+        maxlength="150"
+        pInputTextarea
+        placeholder="Cytuj"
+        rows="4">
+        </textarea>
+  </div>
+  <ng-template class="flex align-items-center justify-content-cente" pTemplate="footer">
+    <p-button
+      (click)="quotePost()"
+      [disabled]="!quoteContent || quoteContent.length === 0"
+      [text]="true"
+      label="Cytuj"/>
+  </ng-template>
+</p-dialog>

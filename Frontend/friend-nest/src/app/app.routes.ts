@@ -36,12 +36,27 @@ export const routes: Routes = [
           ),
       },
       {
+        path: 'post/:postId/repost/:reposterId',
+        loadComponent: () =>
+          import(
+            './components/main-layout/post-details/post-details.component'
+          ).then((m) => m.PostDetailsComponent),
+      },
+      {
+        path: 'post/:postId/quote/:quotedPostId',
+        loadComponent: () =>
+          import(
+            './components/main-layout/post-details/post-details.component'
+          ).then((m) => m.PostDetailsComponent),
+      },
+      {
         path: 'post/:postId',
         loadComponent: () =>
           import(
             './components/main-layout/post-details/post-details.component'
           ).then((m) => m.PostDetailsComponent),
       },
+
       {
         path: 'search',
         loadComponent: () =>

@@ -4,9 +4,15 @@ import { PostService } from '../../../services/post.service';
 import { PostDetails } from '../../../models/response/PostDetails';
 import { GetPostDetails } from '../../../models/request/GetPostDetails';
 import { User } from '../../../models/User';
-import {ActivatedRoute, RouterLink} from '@angular/router';
+import { ActivatedRoute, RouterLink } from '@angular/router';
 import { PostComponent } from '../main-page/post/post.component';
-import { AsyncPipe, NgClass, NgIf, NgOptimizedImage } from '@angular/common';
+import {
+  AsyncPipe,
+  NgClass,
+  NgIf,
+  NgOptimizedImage,
+  NgTemplateOutlet,
+} from '@angular/common';
 import { Button } from 'primeng/button';
 import { Location } from '@angular/common';
 import { ImageModule } from 'primeng/image';
@@ -18,6 +24,10 @@ import { AddPostComponent } from '../main-page/add-post/add-post.component';
 import { ToastModule } from 'primeng/toast';
 import { mapCommentToPost } from '../../../utils/PostDTO';
 import { Post } from '../../../models/Post';
+import { QuotePostRequest } from '../../../models/request/QuotePostRequest';
+import { DialogModule } from 'primeng/dialog';
+import { InputTextareaModule } from 'primeng/inputtextarea';
+import { PaginatorModule } from 'primeng/paginator';
 
 @Component({
   selector: 'app-post-details',
@@ -33,6 +43,10 @@ import { Post } from '../../../models/Post';
     ToastModule,
     NgIf,
     RouterLink,
+    DialogModule,
+    InputTextareaModule,
+    NgTemplateOutlet,
+    PaginatorModule,
   ],
   templateUrl: './post-details.component.html',
   styleUrl: './post-details.component.scss',
@@ -44,7 +58,8 @@ export class PostDetailsComponent
   user: User = this.getUser();
   postDetails!: PostDetails;
   mappedComments: { postTo: PostTo; commentId: number }[] = [];
-
+  quoteContent: string = '';
+  visible: boolean = false;
   buttonStates: {
     [key: number]: { disabled: boolean };
   } = {
@@ -91,6 +106,12 @@ export class PostDetailsComponent
     const payload: GetPostDetails = {
       userId: this.user.userId,
       postId: this.route.snapshot.params['postId'],
+      reposterId: this.route.snapshot.params['reposterId']
+        ? this.route.snapshot.params['reposterId']
+        : null,
+      quotedPostId: this.route.snapshot.params['quotedPostId']
+        ? this.route.snapshot.params['quotedPostId']
+        : null,
     };
     this.postService
       .getPostsDetails(payload)
@@ -148,6 +169,39 @@ export class PostDetailsComponent
     setTimeout(() => {
       buttonState.disabled = false;
     }, 1000);
+  }
+
+  openQuoteModal(event: MouseEvent) {
+    event.stopPropagation();
+    this.visible = !this.visible;
+  }
+
+  quotePost(): void {
+    if (
+      this.user?.userId &&
+      this.postDetails.postTo?.post?.postId &&
+      this.quoteContent?.length > 0
+    ) {
+      const quotePostRequest: QuotePostRequest = {
+        postId: this.postDetails.postTo.post.postId,
+        userId: this.user.userId,
+        content: this.quoteContent,
+      };
+
+      this.postService
+        .quotePost(quotePostRequest)
+        .pipe(this.autoUnsubscribe())
+        .subscribe({
+          next: (value) => this.respondToQuotePost(value),
+          error: (error) => this.hadleHttpError(error),
+        });
+    }
+  }
+
+  private respondToQuotePost(value: Post) {
+    this.quoteContent = '';
+    this.visible = false;
+    this.openSuccessToast('Zacytowano post!');
   }
 
   deltePost(): void {

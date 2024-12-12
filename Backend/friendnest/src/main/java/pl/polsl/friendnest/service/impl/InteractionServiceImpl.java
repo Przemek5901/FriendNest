@@ -76,8 +76,6 @@ public class InteractionServiceImpl implements InteractionService {
         }
         return getUserInteractions(user, null,post);
 
-
-
     }
 
     @Override

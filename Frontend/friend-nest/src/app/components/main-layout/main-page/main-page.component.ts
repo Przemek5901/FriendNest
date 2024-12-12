@@ -60,8 +60,4 @@ export class MainPageComponent extends BaseComponent implements OnInit {
         .pipe(this.autoUnsubscribe());
     }
   }
-
-  openPost(postTo: PostTo): void {
-    this.router.navigate(['post', postTo.post.postId]);
-  }
 }

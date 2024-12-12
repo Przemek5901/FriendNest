@@ -1,5 +1,10 @@
 import { Component, EventEmitter, Input, Output } from '@angular/core';
-import { NgClass, NgOptimizedImage } from '@angular/common';
+import {
+  NgClass,
+  NgOptimizedImage,
+  NgStyle,
+  NgTemplateOutlet,
+} from '@angular/common';
 import { User } from '../../../../models/User';
 import { BaseComponent } from '../../../../utils/base-component';
 import { Button } from 'primeng/button';
@@ -8,20 +13,46 @@ import { InteractionService } from '../../../../services/interaction.service';
 import { AddInteracionRequest } from '../../../../models/request/AddInteracionRequest';
 import { PostTo } from '../../../../models/response/PostTo';
 import { UserInteractions } from '../../../../models/response/UserInteractionsToPost';
-import {Router, RouterLink} from '@angular/router';
+import { Router, RouterLink } from '@angular/router';
 import { PostService } from '../../../../services/post.service';
 import { CommentService } from '../../../../services/comment.service';
+import { DialogModule } from 'primeng/dialog';
+import { DropdownModule } from 'primeng/dropdown';
+import { InputTextModule } from 'primeng/inputtext';
+import { PaginatorModule } from 'primeng/paginator';
+import { ReactiveFormsModule } from '@angular/forms';
+import { AddPostComponent } from '../add-post/add-post.component';
+import { InputTextareaModule } from 'primeng/inputtextarea';
+import { Post } from '../../../../models/Post';
+import { QuotePostRequest } from '../../../../models/request/QuotePostRequest';
 
 @Component({
   selector: 'app-post',
   standalone: true,
-  imports: [NgOptimizedImage, Button, NgClass, ImageModule, RouterLink],
+  imports: [
+    NgOptimizedImage,
+    Button,
+    NgClass,
+    ImageModule,
+    RouterLink,
+    DialogModule,
+    DropdownModule,
+    InputTextModule,
+    PaginatorModule,
+    ReactiveFormsModule,
+    AddPostComponent,
+    NgTemplateOutlet,
+    InputTextareaModule,
+    NgStyle,
+  ],
   templateUrl: './post.component.html',
   styleUrl: './post.component.scss',
 })
 export class PostComponent extends BaseComponent {
   private _postTo!: PostTo;
   private _commentId!: number;
+  quoteContent: string = '';
+  @Input() isNested: boolean = false;
   buttonStates: {
     [key: number]: { disabled: boolean };
   } = {
@@ -33,6 +64,7 @@ export class PostComponent extends BaseComponent {
   };
 
   user: User = this.getUser();
+  visible: boolean = false;
 
   constructor(
     private interactionService: InteractionService,
@@ -77,10 +109,6 @@ export class PostComponent extends BaseComponent {
         next: (value) => this.respondToAddReaction(button, value),
         error: (error) => this.hadleHttpError(error),
       });
-  }
-
-  openPost(): void {
-    this.router.navigate(['post', this.postTo.post.postId]);
   }
 
   private respondToAddReaction(
@@ -129,5 +157,57 @@ export class PostComponent extends BaseComponent {
       this.openSuccessToast('Usunięto post');
       this.deleted.emit();
     }
+  }
+
+  openQuoteModal(event: MouseEvent) {
+    event.stopPropagation();
+    this.visible = !this.visible;
+  }
+
+  quotePost(): void {
+    if (
+      this.user?.userId &&
+      this.postTo?.post?.postId &&
+      this.quoteContent?.length > 0
+    ) {
+      const quotePostRequest: QuotePostRequest = {
+        postId: this.postTo.post.postId,
+        userId: this.user.userId,
+        content: this.quoteContent,
+      };
+
+      this.postService
+        .quotePost(quotePostRequest)
+        .pipe(this.autoUnsubscribe())
+        .subscribe({
+          next: (value) => this.respondToQuotePost(value),
+          error: (error) => this.hadleHttpError(error),
+        });
+    }
+  }
+
+  private respondToQuotePost(value: Post) {
+    this.quoteContent = '';
+    this.visible = false;
+    this.openSuccessToast('Zacytowano post!');
+  }
+
+  openPost(postTo: PostTo): void {
+    let route: any[];
+
+    if (postTo.isReposted) {
+      route = ['post', postTo.post.postId, 'repost', postTo.reposter?.userId];
+    } else if (postTo.isQuoted) {
+      route = [
+        'post',
+        postTo.post.postId,
+        'quote',
+        postTo.quotedPost?.post.postId,
+      ];
+    } else {
+      route = ['post', postTo.post.postId];
+    }
+
+    this.router.navigate(route);
   }
 }
