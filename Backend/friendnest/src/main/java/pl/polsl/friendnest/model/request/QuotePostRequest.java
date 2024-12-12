@@ -1,5 +1,6 @@
 package pl.polsl.friendnest.model.request;
 
+
 import lombok.*;
 
 @NoArgsConstructor
@@ -7,9 +8,8 @@ import lombok.*;
 @Setter
 @Builder
 @AllArgsConstructor
-public class GetPostDetailsRequest {
+public class QuotePostRequest {
     private Long postId;
     private Long userId;
-    private Long reposterId;
-    private Long quotedPostId;
+    private String content;
 }

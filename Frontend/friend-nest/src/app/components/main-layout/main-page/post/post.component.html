@@ -1,87 +1,143 @@
-<div class="grid post-container">
-  <div class="col-2 mt-2">
-    <div class="image-container ml-1">
-      <img [ngSrc]="postTo.post.user.profileImageUrl ? postTo.post.user.profileImageUrl : 'http://localhost:8080/defaults/profile.png'"
-           width="80" [routerLink]="['/profile', postTo.post.user.login]" (click)="$event.stopPropagation()"
-           height="80">
-    </div>
-  </div>
-  <div class="col-9">
-    <div class="grid">
-      <div class="block h-1rem mt-3">
-        <span class="text-xl font-bold">{{postTo.post.user.profileName}}</span>
-        <span class="text-l text-400 ml-1">{{'@' + postTo.post.user.login}}</span>
+<ng-template #postTemplate let-buttonStates="buttonStates" let-postTo="postTo" let-roundedBorder="roundedBorder"
+             let-user="user" let-userInteractions="userInteractions">
+  <div (click)="openPost(postTo)" [ngClass]="{'nested-post': isNested, 'main-post': !isNested}" class="post">
+    @if (postTo?.isReposted) {
+      <div class="full-w h-1rem ml-3 pt-2 pb-1 repost-text" [routerLink]="['/profile', postTo.reposter?.login]"
+           (click)="$event.stopPropagation()">
+        <i class="pi pi-sync"></i> <span
+        class="text-xl font-medium">{{ ' ' + postTo.reposter?.profileName + ' podał post dalej' }}</span>
       </div>
-      @if(postTo.post.user.userId === user.userId){
-        <div class="ml-auto block h-1rem delete-button-icon" >
-          <p-button icon="pi pi-trash" [rounded]="true" [text]="true" severity="danger" (click)="deltePostComment($event)"/>
+    }
+    <div [ngClass]="roundedBorder ? 'post-container' : 'post-container-small'"
+         class="grid">
+      <div class="col-2 mt-2">
+        <div class="image-container ml-1">
+          <img
+            (click)="$event.stopPropagation()"
+            [ngSrc]="postTo.post.user?.profileImageUrl ? postTo.post.user?.profileImageUrl : 'http://localhost:8080/defaults/profile.png'"
+            [routerLink]="['/profile', postTo.post.user.login]" height="80"
+            width="80">
         </div>
-      }
-    </div>
-    <div class="block mt-2">
-      @if(postTo.post.imageUrl) {
-        <div class="mt-3 mb-3 border-round-xl max-h-30rem overflow-hidden">
-          <p-image [src]="postTo.post.imageUrl" [preview]="true" width="460" (click)="$event.stopPropagation()"></p-image>
+      </div>
+      <div [style.margin-left]="isNested ? '20px' : '0px'" class="col-9">
+        <div class="grid">
+          <div class="block h-1rem mt-3">
+            <span class="text-xl font-bold">{{ postTo.post.user.profileName }}</span>
+            <span class="text-l text-400 ml-1">{{ '@' + postTo.post.user.login }}</span>
+          </div>
+          @if (postTo.post.user.userId === user.userId) {
+            <div class="ml-auto block h-1rem delete-button-icon">
+              <p-button icon="pi pi-trash" [rounded]="true" [text]="true" severity="danger"
+                        (click)="deltePostComment($event)"/>
+            </div>
+          }
         </div>
-      }
-      <span>{{postTo.post.content}}</span>
-    </div>
-    <div  class="block h-3rem justify-content-between flex mt-1 flex align-items-center justify-content-center">
-      <p-button
-        icon='pi pi-comment'
-        [rounded]="true"
-        [text]="true"
-        [ngClass]="postTo.userInteractions.isCommented ? 'activated-button' : 'default-button'"
-        [disabled]="buttonStates[1].disabled"
-        (click)="openPost()">
-      </p-button>
+        <div class="block mt-2">
+          @if (postTo.post.imageUrl) {
+            <div class="mt-3 mb-3 border-round-xl max-h-20rem overflow-hidden">
+              <p-image [src]="postTo.post.imageUrl" [preview]="true" width="460"
+                       (click)="$event.stopPropagation()"></p-image>
+            </div>
+          }
+          <span>{{ postTo.post.content }}</span>
+        </div>
+        @if (postTo.isQuoted && !isNested) {
+          <div class="scale" (click)="$event.stopPropagation()">
+            <app-post [postTo]="postTo.quotedPost" [isNested]="true"></app-post>
+          </div>
+        }
+        <div class="block h-3rem justify-content-between flex mt-1 flex align-items-center justify-content-center">
+          <p-button
+            [disabled]="true"
+            [ngClass]="postTo.userInteractions.isCommented ? 'activated-button' : 'default-button'"
+            [rounded]="true"
+            [text]="true"
+            icon='pi pi-comment'>
+          </p-button>
 
-      <span class="text-400 interaction-number">{{postTo.userInteractions.commentsNumber}}</span>
+          <span class="text-400 interaction-number">{{ postTo.userInteractions.commentsNumber }}</span>
 
-      <p-button
-        [icon]="postTo.userInteractions.isLiked ? 'pi pi-thumbs-up-fill' : 'pi pi-thumbs-up'"
-        [rounded]="true"
-        [text]="true"
-        [ngClass]="postTo.userInteractions.isLiked ? 'activated-button' : 'default-button'"
-        [disabled]="buttonStates[2].disabled || postTo.userInteractions.isDisliked "
-        (click)="toggleButton(2, $event)">
-      </p-button>
+          <p-button
+            (click)="toggleButton(2, $event)"
+            [disabled]="buttonStates[2].disabled || postTo.userInteractions.isDisliked "
+            [icon]="postTo.userInteractions.isLiked ? 'pi pi-thumbs-up-fill' : 'pi pi-thumbs-up'"
+            [ngClass]="postTo.userInteractions.isLiked ? 'activated-button' : 'default-button'"
+            [rounded]="true"
+            [text]="true">
+          </p-button>
 
-      <span class="text-400 interaction-number">{{postTo.userInteractions.likesNumber}}</span>
+          <span class="text-400 interaction-number">{{ postTo.userInteractions.likesNumber }}</span>
 
-      <p-button
-        [icon]="postTo.userInteractions.isDisliked ? 'pi pi-thumbs-down-fill' : 'pi pi-thumbs-down'"
-        [rounded]="true"
-        [text]="true"
-        [ngClass]="postTo.userInteractions.isDisliked ? 'activated-button' : 'default-button'"
-        [disabled]="buttonStates[3].disabled || postTo.userInteractions.isLiked"
-        (click)="toggleButton(3, $event)">
-      </p-button>
+          <p-button
+            (click)="toggleButton(3, $event)"
+            [disabled]="buttonStates[3].disabled || postTo.userInteractions.isLiked"
+            [icon]="postTo.userInteractions.isDisliked ? 'pi pi-thumbs-down-fill' : 'pi pi-thumbs-down'"
+            [ngClass]="postTo.userInteractions.isDisliked ? 'activated-button' : 'default-button'"
+            [rounded]="true"
+            [text]="true">
+          </p-button>
 
-      <span class="text-400 interaction-number">{{postTo.userInteractions.dislikesNumber}}</span>
+          <span class="text-400 interaction-number">{{ postTo.userInteractions.dislikesNumber }}</span>
 
-      <p-button
-        icon='pi pi-sync'
-        [rounded]="true"
-        [text]="true"
-        [ngClass]="postTo.userInteractions.isReposted ? 'activated-button' : 'default-button'"
-        [disabled]="buttonStates[4].disabled"
-        (click)="toggleButton(4, $event)">
-      </p-button>
+          <p-button
+            (click)="toggleButton(4, $event)"
+            [disabled]="buttonStates[4].disabled || postTo.isQuoted || postTo.isReposted"
+            [ngClass]="postTo.userInteractions.isReposted ? 'activated-button' : 'default-button'"
+            [rounded]="true"
+            [text]="true"
+            icon='pi pi-sync'>
+          </p-button>
 
-      <span class="text-400 interaction-number">{{postTo.userInteractions.repostsNumber}}</span>
+          <span class="text-400 interaction-number">{{ postTo.userInteractions.repostsNumber }}</span>
 
-      <p-button
-        icon='pi pi-pencil'
-        [rounded]="true"
-        [text]="true"
-        [ngClass]="postTo.userInteractions.isQuoted ? 'activated-button' : 'default-button'"
-        [disabled]="buttonStates[5].disabled"
-        (click)="toggleButton(5, $event)">
-      </p-button>
+          <p-button
+            (click)="openQuoteModal($event)"
+            [disabled]="buttonStates[5].disabled || postTo.isQuoted || postTo.isReposted"
+            [ngClass]="postTo.userInteractions.isQuoted ? 'activated-button' : 'default-button'"
+            [rounded]="true"
+            [text]="true"
+            icon='pi pi-pencil'>
+          </p-button>
 
-      <span class="text-400 interaction-number">{{postTo.userInteractions.quotesNumber}}</span>
+          <span class="text-400 interaction-number">{{ postTo.userInteractions.quotesNumber }}</span>
 
+        </div>
+
+      </div>
     </div>
   </div>
-</div>
+</ng-template>
+
+<ng-container
+  *ngTemplateOutlet="postTemplate; context: { postTo: postTo, user: user,
+  buttonStates: buttonStates, roundedBorder: true, userInteractions: postTo?.userInteractions}"></ng-container>
+
+<p-dialog
+  [(visible)]="visible"
+  [style]="{ width: '40rem'}"
+  appendTo="body">
+  <ng-template pTemplate="header">
+    <span class="ml-5 font-bold text-2xl">Cytuj post</span>
+  </ng-template>
+  <ng-container
+    *ngTemplateOutlet="postTemplate; context: { postTo: postTo, user: user, buttonStates: buttonStates, roundedBorder: false }"></ng-container>
+  <div class="flex align-items-center justify-content-center mt-2">
+      <textarea
+        #textArea
+        [(ngModel)]="quoteContent"
+        class="taPost"
+        cols="30"
+        maxlength="150"
+        pInputTextarea
+        placeholder="Cytuj"
+        rows="4">
+        </textarea>
+  </div>
+  <ng-template class="flex align-items-center justify-content-cente" pTemplate="footer">
+    <p-button
+      (click)="quotePost()"
+      [disabled]="!quoteContent || quoteContent.length === 0"
+      [text]="true"
+      label="Cytuj"/>
+  </ng-template>
+</p-dialog>

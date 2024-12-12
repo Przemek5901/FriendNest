@@ -11,6 +11,13 @@ img {
   overflow-wrap: break-word;
 }
 
+.post-container-small {
+  border: 1px solid #5e5e5e;
+  border-radius: 10px;
+  overflow-wrap: break-word;
+}
+
+
 .image-container {
   width: 70px;
   height: 70px;
@@ -41,17 +48,72 @@ img {
   .delete-button-icon .p-button.p-button-icon-only.p-button-rounded {
     margin-top: 8px;
   }
+
+  .p-dialog {
+    background-color: black;
+    color: white;
+    box-shadow: 0 0 10px #1e1e1e;
+
+    &-header,
+    &-content,
+    &-footer {
+      background-color: black;
+      color: white;
+    }
+  }
 }
 
 .interaction-number {
   margin-top: 2px;
-  margin-left: -50px
+  margin-left: -30px
 }
 
 .sort-container {
   border: 1px solid #5e5e5e;
 }
 
+.repost-text {
+  color: #00BA7C;
+}
 
+.repost-text:hover {
+  text-decoration: underline;
+}
 
+.taPost {
+  width: 30rem;
+  resize: none;
+}
+
+.scale {
+  transform: scale(0.9);
+}
+
+.post {
+  cursor: pointer;
+  transition: background-color 0.3s ease;
+}
+
+.main-post:hover {
+  background-color: #151515;
+}
+
+.nested-post {
+  background-color: black;
+  border: 1px solid #5e5e5e;
+  border-radius: 10px;
+}
+
+.nested-post:hover {
+  background-color: #1e1e1e;
+}
+
+.nested-post:hover .main-post,
+.main-post:hover .nested-post {
+  background-color: black;
+}
+
+.main-post:hover .nested-post:hover {
+  background-color: #1e1e1e;
+}
 

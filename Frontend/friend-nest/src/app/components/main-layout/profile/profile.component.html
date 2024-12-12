@@ -26,8 +26,10 @@
       style="max-width: 23%; height: auto;"
     />
     @if (user.userId === profile.user?.userId) {
-      <p-button label="Edytuj profil" class="edit-button" [rounded]="true" [outlined]="true"
-                (click)="editData()"></p-button>
+      <div class="ml-auto mt-10 flex align-content-end flex-wrap mr-2">
+        <p-button label="Edytuj profil" class="edit-button" [rounded]="true" [outlined]="true"
+                  (click)="editData()"></p-button>
+      </div>
     } @else {
       <div class="ml-auto mt-10 flex align-content-end flex-wrap">
         <p-button [rounded]="true" [outlined]="true" class="mr-2 " icon="pi pi-envelope"
@@ -61,9 +63,7 @@
   <p-tabView class="tab-view">
     <p-tabPanel header="Posty">
       @for (post of profile.posts; track post.post.postId) {
-        <div class="post" (click)="openPost(post)">
-          <app-post [postTo]="post" (deleted)="getProfile()"></app-post>
-        </div>
+        <app-post [postTo]="post" (deleted)="getProfile()"></app-post>
       }
     </p-tabPanel>
     <p-tabPanel header="Komentarze">
@@ -78,7 +78,8 @@
 <!--profile settings dialog-->
 <p-dialog
   [(visible)]="visible"
-  [modal]="true">
+  [modal]="true"
+  appendTo="body">
   <ng-template pTemplate="header">
     <span class="ml-5 font-bold text-2xl">Edytuj dane profilu</span>
   </ng-template>
@@ -122,9 +123,10 @@
         <label class="font-semibold w-7rem">Płeć</label>
         <p-dropdown
           [options]="genders"
-          appendTo="body"
+          class="category-dropdown"
           formControlName="gender"
           optionLabel="value"
+          appendTo="body"
           optionValue="code"/>
       </div>
     </div>

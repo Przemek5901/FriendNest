@@ -4,6 +4,7 @@ import org.springframework.data.jpa.repository.JpaRepository;
 import org.springframework.data.jpa.repository.JpaSpecificationExecutor;
 import org.springframework.data.jpa.repository.Query;
 import org.springframework.data.repository.query.Param;
+import pl.polsl.friendnest.model.Interaction;
 import pl.polsl.friendnest.model.Post;
 import pl.polsl.friendnest.model.User;
 
@@ -23,5 +24,14 @@ public interface PostRepository extends JpaRepository<Post, Integer>, JpaSpecifi
     @Query("SELECT p FROM Post p WHERE LOWER(p.content) LIKE LOWER(CONCAT('%', :keyword, '%'))")
     List<Post> searchPosts(@Param("keyword") String keyword);
 
+    @Query("select i from Interaction i " +
+            "where i.interactionType = :interactionType " +
+            "and (:includeUser = true and i.user = :user or :includeUser = false and i.user != :user)")
+    List<Interaction> getInteractionsByTypeAndUserCondition(
+            @Param("interactionType") Long interactionType,
+            @Param("user") User user,
+            @Param("includeUser") boolean includeUser);
+
+    Optional<Post> getPostsByPostId(Long postId);
 
 }

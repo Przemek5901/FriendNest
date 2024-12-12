@@ -7,31 +7,29 @@
   <div class="h-3rem sort-container mt-2 grid">
     <div class="w-21rem">
       <span class="text-xl ml-4 font-bold mr-1">Sortuj po:</span>
-      <p-dropdown [options]="sortOptions"
+      <p-dropdown (onChange)="getPosts()"
+                  [(ngModel)]="getPostsRequest.sortOption"
+                  [options]="sortOptions"
+                  class="category-dropdown"
                   optionLabel="value"
                   optionValue="code"
-                  [(ngModel)]="getPostsRequest.sortOption"
-                  class="category-dropdown"
-                  (onChange)="getPosts()"
-                  placeholder="Wybierz" ></p-dropdown>
+                  placeholder="Wybierz"></p-dropdown>
     </div>
     <div class="ml-1">
       <span class="text-xl font-bold mr-1">Kategoria: </span>
-      <p-dropdown [options]="categories"
+      <p-dropdown (onChange)="getPosts()"
+                  [(ngModel)]="getPostsRequest.category"
+                  [options]="categories"
+                  class="category-dropdown"
                   optionLabel="value"
                   optionValue="code"
-                  [(ngModel)]="getPostsRequest.category"
-                  (onChange)="getPosts()"
-                  class="category-dropdown"
-                  placeholder="Wybierz" ></p-dropdown>
+                  placeholder="Wybierz"></p-dropdown>
     </div>
   </div>
   <div>
     @if (posts$ | async; as posts) {
       @for (post of posts; track post) {
-        <div class="post" (click)="openPost(post)">
-          <app-post [postTo]="post"></app-post>
-        </div>
+        <app-post [postTo]="post" [isNested]="false"></app-post>
       }
     }
   </div>

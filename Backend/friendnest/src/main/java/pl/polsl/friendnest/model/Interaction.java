@@ -34,6 +34,12 @@ public class Interaction {
     private Post post;
 
     @ManyToOne(fetch = FetchType.EAGER)
+    @OnDelete(action = OnDeleteAction.CASCADE)
+    @JoinColumn(name = "\"NEW_POST_ID\"")
+    @JsonIgnore
+    private Post newPost;
+
+    @ManyToOne(fetch = FetchType.EAGER)
     @OnDelete(action = OnDeleteAction.SET_NULL)
     @JoinColumn(name = "\"COMMENT_ID\"")
     private Comment comment;

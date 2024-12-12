@@ -7,6 +7,7 @@ import { PostTo } from '../models/response/PostTo';
 import { GetPostsRequest } from '../models/request/GetPostsRequest';
 import { GetPostDetails } from '../models/request/GetPostDetails';
 import { PostDetails } from '../models/response/PostDetails';
+import { QuotePostRequest } from '../models/request/QuotePostRequest';
 
 @Injectable({
   providedIn: 'root',
@@ -29,6 +30,13 @@ export class PostService {
     return this.http.post<PostDetails>(
       'http://localhost:8080/api/getPostDetails',
       getPostDetails,
+    );
+  }
+
+  quotePost(quotePostRequest: QuotePostRequest): Observable<Post> {
+    return this.http.post<Post>(
+      'http://localhost:8080/api/quotePost',
+      quotePostRequest,
     );
   }
 

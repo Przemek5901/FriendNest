@@ -8,6 +8,7 @@ import pl.polsl.friendnest.model.PostTo;
 import pl.polsl.friendnest.model.request.AddPostRequest;
 import pl.polsl.friendnest.model.request.GetPostDetailsRequest;
 import pl.polsl.friendnest.model.request.GetPostsRequest;
+import pl.polsl.friendnest.model.request.QuotePostRequest;
 import pl.polsl.friendnest.model.response.PostDetails;
 import pl.polsl.friendnest.service.PostService;
 
@@ -41,6 +42,11 @@ public class PostController {
     @DeleteMapping("/deletePost/{postId}")
     public ResponseEntity<Post> deletePost(@PathVariable Long postId) {
         return ResponseEntity.ok(postService.deletePost(postId));
+
+    }
+    @PostMapping("/quotePost")
+    public ResponseEntity<Post> quotePost(@RequestBody QuotePostRequest quotePostRequest) {
+        return ResponseEntity.ok(postService.quotePost(quotePostRequest));
 
     }
 }

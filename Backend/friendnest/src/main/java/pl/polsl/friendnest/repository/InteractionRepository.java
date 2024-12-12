@@ -20,9 +20,9 @@ public interface InteractionRepository extends JpaRepository<Interaction, Intege
             User user, Post post, Integer interactionType, @Nullable Comment comment);
 
     Integer countAllByPostAndInteractionTypeAndComment(Post post, Integer interactionId, Comment comment);
-    //Integer countAllByPostAndInteractionTypeAndComment(Post post, Integer interactionId, Comment comment);
-
-    //boolean existsAllByUserAndPostAndAndInteractionType(User user, Post post, Integer interactionId);
     boolean existsAllByUserAndPostAndAndInteractionTypeAndComment(User user, Post post, Integer interactionId, Comment comment);
+
+    List<Interaction> getInteractionsByInteractionType(Integer interactionType);
+
 
 }

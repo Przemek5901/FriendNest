@@ -67,5 +67,17 @@ hr {
   margin-left: -50px
 }
 
+.repost-text {
+  color: #00BA7C;
+}
 
+.repost-text:hover {
+  text-decoration: underline;
+  cursor: pointer;
+}
 
+.scale {
+  transform: scale(0.9);
+  border: 1px solid #5e5e5e;
+  border-radius: 10px;
+}

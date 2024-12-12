@@ -13,22 +13,20 @@ input {
 
 ::ng-deep {
   .p-dialog {
-    &-header {
-      background-color: black;
-      color: white;
-    }
-    &-content {
-      background-color: black;
-      color: white;
-    }
+    background-color: black;
+    color: white;
+    box-shadow: 0 0 10px #1e1e1e;
+
+    &-header,
+    &-content,
     &-footer {
       background-color: black;
       color: white;
     }
-    width: 35rem
   }
   .p-dropdown {
     width: 20rem;
+    background-color: black;
   }
 }
 
