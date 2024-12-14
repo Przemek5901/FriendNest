@@ -20,6 +20,7 @@ import java.time.OffsetDateTime;
 import java.util.*;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
+import java.util.stream.Collectors;
 
 @Service
 public class PostServiceImpl implements PostService {
@@ -106,12 +107,53 @@ public class PostServiceImpl implements PostService {
         User user = userRepository.findByUserId(getPostsRequest.getUserId())
                 .orElseThrow(CustomException::new);
 
-        Specification<Post> specification = Specification
-                .where(PostSpecification.userNot(user))
-                .and(PostSpecification.category(Integer.decode(getPostsRequest.getCategory())))
-                .and(PostSpecification.sortByCriteria(Integer.decode(getPostsRequest.getSortOption())));
+        List<PostTo> postToList = generatePostToList(user, getPostsRequest);
 
-        List<Post> posts = postRepository.findAll(specification);
+        postToList = postToList.stream()
+                .filter(postTo -> filterByCategory(postTo, getPostsRequest.getCategory()))
+                .collect(Collectors.toList());
+
+        postToList = postToList.stream()
+                .sorted(getComparatorBySortOption(getPostsRequest.getSortOption()))
+                .collect(Collectors.toList());
+
+        return postToList;
+    }
+
+    private boolean filterByCategory(PostTo postTo, String category) {
+        if (!StringUtils.hasLength(category) || category.equals("0") || !StringUtils.hasLength(postTo.getPost().getCategory())) {
+            return true;
+        }
+        return postTo.getPost().getCategory().equals(category);
+    }
+
+    private Comparator<PostTo> getComparatorBySortOption(String sortOption) {
+        if (sortOption == null || sortOption.equals("1")) {
+            return Comparator.comparing(postTo -> postTo.getPost().getCreatedAt(), Comparator.reverseOrder());
+        } else if (sortOption.equals("2")) {
+            return Comparator.comparing(postTo -> postTo.getPost().getCreatedAt());
+        } else if (sortOption.equals("3")) {
+            return Comparator.comparing(
+                    postTo -> postTo.getPost().getInteractions().stream()
+                            .filter(interaction -> interaction.getInteractionType() == 2)
+                            .count(),
+                    Comparator.reverseOrder()
+            );
+        } else if (sortOption.equals("4")) {
+            return Comparator.comparing(
+                    postTo -> postTo.getPost().getInteractions().stream()
+                            .filter(interaction -> interaction.getInteractionType() == 2)
+                            .count()
+            );
+        } else {
+            return Comparator.comparing(postTo -> postTo.getPost().getCreatedAt(), Comparator.reverseOrder());
+        }
+    }
+
+
+
+    private List<PostTo> generatePostToList(User user, GetPostsRequest getPostsRequest) {
+        List<Post> posts = postRepository.findByUserNot(user);
         List<Interaction> reposts = postRepository.getInteractionsByTypeAndUserCondition(4L, user, false);
         List<Interaction> quotedPosts = postRepository.getInteractionsByTypeAndUserCondition(5L, user, false);
 
@@ -160,7 +202,6 @@ public class PostServiceImpl implements PostService {
             postTo.setQuotedPost(null);
             postTo.setUserInteractions(interactionService.getUserInteractions(user, null, post));
             postToList.add(postTo);
-            processedPostIds.add(post.getPostId());
         }
 
         return postToList;
@@ -338,7 +379,7 @@ public class PostServiceImpl implements PostService {
 
         var postToSave = Post.builder()
                 .user(user)
-                .category(null)
+                .category("0")
                 .content(quotePostRequest.getContent())
                 .createdAt(OffsetDateTime.now())
                 .build();

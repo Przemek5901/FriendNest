@@ -6,7 +6,7 @@ import { ToastModule } from 'primeng/toast';
 import { AddPostComponent } from './add-post/add-post.component';
 import { PostComponent } from './post/post.component';
 import { PostTo } from '../../../models/response/PostTo';
-import { Observable } from 'rxjs';
+import { finalize, Observable } from 'rxjs';
 import { AsyncPipe } from '@angular/common';
 import { Dictionary } from '../../../models/Dictionary';
 import { categoryList } from '../../../costants/CategoryList';
@@ -14,7 +14,7 @@ import { DropdownModule } from 'primeng/dropdown';
 import { sortOptions } from '../../../costants/SortOptions';
 import { GetPostsRequest } from '../../../models/request/GetPostsRequest';
 import { FormsModule } from '@angular/forms';
-import { Router } from '@angular/router';
+import { SpinnerService } from '../../../services/spinner.service';
 
 @Component({
   selector: 'app-main-page',
@@ -44,7 +44,7 @@ export class MainPageComponent extends BaseComponent implements OnInit {
 
   constructor(
     private postService: PostService,
-    private router: Router,
+    private spinnerService: SpinnerService,
   ) {
     super();
   }
@@ -53,11 +53,17 @@ export class MainPageComponent extends BaseComponent implements OnInit {
     this.getPosts();
   }
 
-  getPosts() {
+  getPosts(): void {
+    this.spinnerService.show();
     if (this.getPostsRequest.userId) {
       this.posts$ = this.postService
         .getPostsExceptUser(this.getPostsRequest)
-        .pipe(this.autoUnsubscribe());
+        .pipe(
+          this.autoUnsubscribe(),
+          finalize(() => {
+            this.spinnerService.hide();
+          }),
+        );
     }
   }
 }
