@@ -25,6 +25,7 @@ import { AddPostComponent } from '../add-post/add-post.component';
 import { InputTextareaModule } from 'primeng/inputtextarea';
 import { Post } from '../../../../models/Post';
 import { QuotePostRequest } from '../../../../models/request/QuotePostRequest';
+import { HighlightHashtagsDirective } from '../../../../utils/highlight-hashtags.directive';
 
 @Component({
   selector: 'app-post',
@@ -44,6 +45,7 @@ import { QuotePostRequest } from '../../../../models/request/QuotePostRequest';
     NgTemplateOutlet,
     InputTextareaModule,
     NgStyle,
+    HighlightHashtagsDirective,
   ],
   templateUrl: './post.component.html',
   styleUrl: './post.component.scss',
@@ -209,5 +211,12 @@ export class PostComponent extends BaseComponent {
     }
 
     this.router.navigate(route);
+  }
+
+  onHashtagClicked(data: { hashtag: string; event: Event }): void {
+    data.event.stopPropagation();
+    this.router.navigate(['/search'], {
+      queryParams: { keyword: data.hashtag, focusOnPosts: true },
+    });
   }
 }

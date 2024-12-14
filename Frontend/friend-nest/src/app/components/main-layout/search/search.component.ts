@@ -12,8 +12,8 @@ import { SearchService } from '../../../services/search.service';
 import { SearchResults } from '../../../models/response/SearchResults';
 import { User } from '../../../models/User';
 import { PostComponent } from '../main-page/post/post.component';
-import { TabViewModule } from 'primeng/tabview';
 import { NgOptimizedImage } from '@angular/common';
+import { TabViewModule } from 'primeng/tabview';
 
 @Component({
   selector: 'app-search',
@@ -35,8 +35,10 @@ import { NgOptimizedImage } from '@angular/common';
   styleUrl: './search.component.scss',
 })
 export class SearchComponent extends BaseComponent implements OnInit {
+  activeIndex: number = 0;
   user: User = this.getUser();
   keyword: string | null = '';
+  focusOnPosts: boolean = false;
   searchResults: SearchResults = { users: [], posts: [] };
 
   constructor(
@@ -50,8 +52,12 @@ export class SearchComponent extends BaseComponent implements OnInit {
   ngOnInit() {
     this.route.queryParamMap.subscribe((params) => {
       this.keyword = params.get('keyword');
+      this.focusOnPosts = !!params.get('focusOnPosts');
       if (this.keyword) {
         this.search();
+      }
+      if (this.focusOnPosts) {
+        this.activeIndex = 1;
       }
     });
   }

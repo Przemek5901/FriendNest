@@ -1,6 +1,7 @@
 package pl.polsl.friendnest.service.impl;
 
 import org.springframework.data.jpa.domain.Specification;
+import org.springframework.security.core.parameters.P;
 import org.springframework.stereotype.Service;
 import org.springframework.util.StringUtils;
 import pl.polsl.friendnest.exception.CustomException;
@@ -10,16 +11,15 @@ import pl.polsl.friendnest.model.request.GetPostDetailsRequest;
 import pl.polsl.friendnest.model.request.GetPostsRequest;
 import pl.polsl.friendnest.model.request.QuotePostRequest;
 import pl.polsl.friendnest.model.response.PostDetails;
-import pl.polsl.friendnest.repository.CommentRepository;
-import pl.polsl.friendnest.repository.InteractionRepository;
-import pl.polsl.friendnest.repository.PostRepository;
-import pl.polsl.friendnest.repository.UserRepository;
+import pl.polsl.friendnest.repository.*;
 import pl.polsl.friendnest.service.FileService;
 import pl.polsl.friendnest.service.InteractionService;
 import pl.polsl.friendnest.service.PostService;
 
 import java.time.OffsetDateTime;
 import java.util.*;
+import java.util.regex.Matcher;
+import java.util.regex.Pattern;
 
 @Service
 public class PostServiceImpl implements PostService {
@@ -27,19 +27,21 @@ public class PostServiceImpl implements PostService {
     private final PostRepository postRepository;
     private final UserRepository userRepository;
     private final FileService fileService;
-
     private final InteractionService interactionService;
     private final CommentRepository commentRepository;
-
     private final InteractionRepository interactionRepository;
+    private final HashtagRepository hashtagRepository;
+    private final PostHashtagRepository postHashtagRepository;
 
-    public PostServiceImpl(PostRepository postRepository, UserRepository userRepository, FileService fileService, InteractionService interactionService, CommentRepository commentRepository, InteractionRepository interactionRepository) {
+    public PostServiceImpl(PostRepository postRepository, UserRepository userRepository, FileService fileService, InteractionService interactionService, CommentRepository commentRepository, InteractionRepository interactionRepository, HashtagRepository hashtagRepository, PostHashtagRepository postHashtagRepository) {
         this.postRepository = postRepository;
         this.userRepository = userRepository;
         this.fileService = fileService;
         this.interactionService = interactionService;
         this.commentRepository = commentRepository;
         this.interactionRepository = interactionRepository;
+        this.hashtagRepository = hashtagRepository;
+        this.postHashtagRepository = postHashtagRepository;
     }
 
     @Override
@@ -71,6 +73,26 @@ public class PostServiceImpl implements PostService {
         post.setCreatedAt(OffsetDateTime.now());
 
         postRepository.save(post);
+
+
+        if(StringUtils.hasLength(payload.getContent())) {
+            Pattern pattern = Pattern.compile("\\B#[a-zA-Z0-9_]+");
+            Matcher matcher = pattern.matcher(payload.getContent());
+
+            while (matcher.find()) {
+                Hashtag hashtag = hashtagRepository.findByTag(matcher.group()).orElse(null);
+
+                if(hashtag == null) {
+                    hashtag = Hashtag.builder().tag(matcher.group()).build();
+                    hashtagRepository.save(hashtag);
+                }
+
+                PostHashtagId postHashtagId = new PostHashtagId(hashtag.getHashtagId(), post.getPostId());
+                PostHashtag postHashtag = new PostHashtag(postHashtagId, hashtag, post);
+                postHashtagRepository.save(postHashtag);
+
+            }
+        }
 
         return post;
     }
@@ -290,6 +312,12 @@ public class PostServiceImpl implements PostService {
     public Post deletePost(Long postId) {
         Post post = postRepository.findPostByPostId(postId)
                 .orElseThrow(CustomException::new);
+
+        List <PostHashtag> postHashtags = postHashtagRepository.findByPost(post);
+
+        if(postHashtags != null && !postHashtags.isEmpty()) {
+            postHashtagRepository.deleteAll(postHashtags);
+        }
 
         postRepository.delete(post);
         return post;

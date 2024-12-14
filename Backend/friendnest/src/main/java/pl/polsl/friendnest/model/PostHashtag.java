@@ -17,13 +17,13 @@ public class PostHashtag {
     private PostHashtagId id;
 
     @MapsId("hashtagId")
-    @ManyToOne(fetch = FetchType.LAZY, optional = false)
+    @ManyToOne(fetch = FetchType.EAGER, optional = false)
     @OnDelete(action = OnDeleteAction.CASCADE)
     @JoinColumn(name = "\"HASHTAG_ID\"", nullable = false)
     private Hashtag hashtag;
 
     @MapsId("postId")
-    @ManyToOne(fetch = FetchType.LAZY, optional = false)
+    @ManyToOne(fetch = FetchType.EAGER, optional = false)
     @OnDelete(action = OnDeleteAction.CASCADE)
     @JoinColumn(name = "\"POST_ID\"", nullable = false)
     private Post post;

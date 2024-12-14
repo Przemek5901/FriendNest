@@ -4,17 +4,17 @@ import { PostService } from '../../../services/post.service';
 import { PostDetails } from '../../../models/response/PostDetails';
 import { GetPostDetails } from '../../../models/request/GetPostDetails';
 import { User } from '../../../models/User';
-import { ActivatedRoute, RouterLink } from '@angular/router';
+import { ActivatedRoute, Router, RouterLink } from '@angular/router';
 import { PostComponent } from '../main-page/post/post.component';
 import {
   AsyncPipe,
+  Location,
   NgClass,
   NgIf,
   NgOptimizedImage,
   NgTemplateOutlet,
 } from '@angular/common';
 import { Button } from 'primeng/button';
-import { Location } from '@angular/common';
 import { ImageModule } from 'primeng/image';
 import { AddInteracionRequest } from '../../../models/request/AddInteracionRequest';
 import { UserInteractions } from '../../../models/response/UserInteractionsToPost';
@@ -28,6 +28,7 @@ import { QuotePostRequest } from '../../../models/request/QuotePostRequest';
 import { DialogModule } from 'primeng/dialog';
 import { InputTextareaModule } from 'primeng/inputtextarea';
 import { PaginatorModule } from 'primeng/paginator';
+import { HighlightHashtagsDirective } from '../../../utils/highlight-hashtags.directive';
 
 @Component({
   selector: 'app-post-details',
@@ -47,6 +48,7 @@ import { PaginatorModule } from 'primeng/paginator';
     InputTextareaModule,
     NgTemplateOutlet,
     PaginatorModule,
+    HighlightHashtagsDirective,
   ],
   templateUrl: './post-details.component.html',
   styleUrl: './post-details.component.scss',
@@ -75,6 +77,7 @@ export class PostDetailsComponent
     private route: ActivatedRoute,
     private location: Location,
     private interactionService: InteractionService,
+    private router: Router,
   ) {
     super();
   }
@@ -219,5 +222,12 @@ export class PostDetailsComponent
   private respondToDeletePost(value: Post) {
     this.openSuccessToast('Ususnięto post');
     this.location.back();
+  }
+
+  onHashtagClicked(data: { hashtag: string; event: Event }): void {
+    data.event.stopPropagation();
+    this.router.navigate(['/search'], {
+      queryParams: { keyword: data.hashtag, focusOnPosts: true },
+    });
   }
 }

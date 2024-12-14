@@ -11,7 +11,7 @@
     </p-iconField>
   </div>
   <div class="w-full tab-view-container">
-    <p-tabView class="tab-view">
+    <p-tabView class="tab-view" [activeIndex]="activeIndex">
       <p-tabPanel header="Użytkownicy">
         @if (searchResults.users && searchResults.users.length > 0) {
           @for (user of searchResults.users; track user.userId) {

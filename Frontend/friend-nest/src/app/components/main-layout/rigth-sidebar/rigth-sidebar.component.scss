@@ -10,3 +10,12 @@
   border-radius: 10px;
 }
 
+.hashtag-container {
+  cursor: pointer;
+  transition: background-color 0.3s ease;
+  border-radius: 10px
+}
+
+.hashtag-container:hover {
+  background-color: #151515;
+}

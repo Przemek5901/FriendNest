@@ -1,5 +1,4 @@
-import { Component } from '@angular/core';
-import { AutoCompleteModule } from 'primeng/autocomplete';
+import { Component, OnInit } from '@angular/core';
 import { BaseComponent } from '../../../utils/base-component';
 import { SearchService } from '../../../services/search.service';
 import { FormsModule } from '@angular/forms';
@@ -7,17 +6,21 @@ import { SearchResults } from '../../../models/response/SearchResults';
 import { User } from '../../../models/User';
 import { Router } from '@angular/router';
 import { PostTo } from '../../../models/response/PostTo';
+import { HashtagService } from '../../../services/hashtag.service';
+import { HashtagTo } from '../../../models/response/HashtagTo';
+import { AutoCompleteModule } from 'primeng/autocomplete';
 
 @Component({
   selector: 'app-rigth-sidebar',
   standalone: true,
-  imports: [AutoCompleteModule, FormsModule],
+  imports: [FormsModule, AutoCompleteModule],
   templateUrl: './rigth-sidebar.component.html',
   styleUrl: './rigth-sidebar.component.scss',
 })
-export class RigthSidebarComponent extends BaseComponent {
+export class RigthSidebarComponent extends BaseComponent implements OnInit {
   user: User = this.getUser();
   filteredGroups: any[] = [];
+  hashtagList: HashtagTo[] = [];
 
   selectedResult!: SearchResults;
 
@@ -26,8 +29,23 @@ export class RigthSidebarComponent extends BaseComponent {
   constructor(
     private searchService: SearchService,
     private router: Router,
+    private hashtagService: HashtagService,
   ) {
     super();
+  }
+
+  ngOnInit() {
+    this.getHashatgs();
+  }
+
+  private getHashatgs(): void {
+    this.hashtagService
+      .getHashtags()
+      .pipe(this.autoUnsubscribe())
+      .subscribe({
+        next: (results) => (this.hashtagList = results),
+        error: (err) => this.hadleHttpError(err),
+      });
   }
 
   onInputChange(event: any) {
@@ -87,5 +105,11 @@ export class RigthSidebarComponent extends BaseComponent {
     } else {
       this.router.navigate(['profile', event?.value?.value?.login]);
     }
+  }
+
+  searchHashtag(tag: string) {
+    this.router.navigate(['/search'], {
+      queryParams: { keyword: tag, focusOnPosts: true },
+    });
   }
 }

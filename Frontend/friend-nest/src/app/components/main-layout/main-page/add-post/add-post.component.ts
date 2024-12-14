@@ -27,6 +27,7 @@ import { ToastModule } from 'primeng/toast';
 import { AddCommentRequest } from '../../../../models/request/AddCommentRequest';
 import { CommentService } from '../../../../services/comment.service';
 import { ActivatedRoute } from '@angular/router';
+import {HighlightHashtagsDirective} from '../../../../utils/highlight-hashtags.directive';
 
 @Component({
   selector: 'app-add-post',
@@ -42,6 +43,7 @@ import { ActivatedRoute } from '@angular/router';
     ImageModule,
     DropdownModule,
     ToastModule,
+    HighlightHashtagsDirective,
   ],
   templateUrl: './add-post.component.html',
   styleUrl: './add-post.component.scss',

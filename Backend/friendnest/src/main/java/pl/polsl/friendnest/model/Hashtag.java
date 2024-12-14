@@ -1,9 +1,6 @@
 package pl.polsl.friendnest.model;
 
-import jakarta.persistence.Column;
-import jakarta.persistence.Entity;
-import jakarta.persistence.Id;
-import jakarta.persistence.Table;
+import jakarta.persistence.*;
 import lombok.*;
 
 @Getter
@@ -16,7 +13,8 @@ import lombok.*;
 public class Hashtag {
     @Id
     @Column(name = "\"HASHTAG_ID\"", nullable = false)
-    private Integer id;
+    @GeneratedValue(strategy = GenerationType.IDENTITY)
+    private Integer hashtagId;
 
     @Column(name = "\"TAG\"", nullable = false, length = 30)
     private String tag;
