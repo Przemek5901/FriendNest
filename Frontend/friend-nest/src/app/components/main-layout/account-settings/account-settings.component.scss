@@ -1,0 +1,60 @@
+.account-settings-container {
+  flex-direction: column;
+  border-left: 1px solid #5e5e5e;
+  border-right: 1px solid #5e5e5e;
+  overflow-x: hidden;
+}
+
+::ng-deep {
+  .p-datepicker {
+    &:not(.p-datepicker-inline) {
+      background-color: black;
+      color: white;
+    }
+
+    .p-datepicker-header {
+      background-color: black;
+      color: white;
+
+      .p-datepicker-title {
+        .p-datepicker-year,
+        .p-datepicker-month {
+          color: white;
+        }
+      }
+    }
+
+    &:not(.p-disabled) {
+      table {
+        td {
+          span {
+            &:not(.p-highlight):not(.p-disabled):hover {
+              color: black;
+            }
+          }
+        }
+      }
+
+      .p-monthpicker {
+        .p-monthpicker-month:not(.p-disabled):not(.p-highlight):hover {
+          color: black;
+        }
+      }
+
+      .p-yearpicker {
+        .p-yearpicker-year:not(.p-disabled):not(.p-highlight):hover {
+          color: black;
+        }
+      }
+    }
+  }
+
+  .account-inputs .p-inputtext {
+    width: 25rem;
+  }
+}
+
+.full-button ::ng-deep .p-button {
+  width: 16rem;
+  margin-left: 20px;
+}
