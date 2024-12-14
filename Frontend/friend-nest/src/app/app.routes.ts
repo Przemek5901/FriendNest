@@ -71,6 +71,13 @@ export const routes: Routes = [
             (m) => m.MessagesComponent,
           ),
       },
+      {
+        path: 'account-settings',
+        loadComponent: () =>
+          import(
+            './components/main-layout/account-settings/account-settings.component'
+          ).then((m) => m.AccountSettingsComponent),
+      },
     ],
   },
 ];

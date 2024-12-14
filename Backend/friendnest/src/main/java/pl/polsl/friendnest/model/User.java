@@ -37,6 +37,7 @@ public class User implements UserDetails {
     private String phoneNumber;
 
     @Column(name = "\"BIRTHDATE\"")
+    @JsonProperty("birthday")
     private LocalDate birthdate;
 
     @Column(name = "\"PROFILE_NAME\"", nullable = false, length = 30)

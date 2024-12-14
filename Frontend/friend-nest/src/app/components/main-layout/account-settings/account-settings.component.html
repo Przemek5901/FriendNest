@@ -1,0 +1,48 @@
+<div class="w-full min-h-full h-full account-settings-container">
+  <p-toast></p-toast>
+  <div class="flex justify-content-center pt-5">
+    <span class="text-3xl ml-4 font-bold">Ustawienia konta</span>
+  </div>
+  <form [formGroup]="accountCredentials">
+    <div class="ml-5 mt-4">
+      <div class="flex align-items-center gap-3 mb-3">
+        <label for="login" class="font-semibold w-7rem">Login</label>
+        <input
+          pInputText id="login" formControlName="login"
+          class="w-25rem" autocomplete="off"/>
+      </div>
+      <div class="flex align-items-center gap-3 mb-3">
+        <label for="oldPassword" class="font-semibold w-7rem">Stare hasło</label>
+        <input
+          pInputText id="oldPassword" formControlName="oldPassword"
+          class="w-25rem" autocomplete="off" type="password"/>
+      </div>
+      <div class="flex align-items-center gap-3 mb-3">
+        <label for="newPassword" class="font-semibold w-7rem">Nowe hasło</label>
+        <input
+          pInputText id="newPassword" formControlName="newPassword"
+          class="w-25rem" autocomplete="off" type="password"/>
+      </div>
+      <div class="flex align-items-center gap-3 mb-3">
+        <label for="repeatNewPassword" class="font-semibold w-7rem">Powtórz nowe hasło</label>
+        <input
+          pInputText id="repeatNewPassword" formControlName="repeatNewPassword"
+          class="w-25rem" autocomplete="off" type="password"/>
+      </div>
+      <div class="flex align-items-center gap-3 mb-3">
+        <label for="phoneNumber" class="font-semibold w-7rem">Numer telefonu</label>
+        <p-inputMask
+          mask="99-999999" class="account-inputs" id="phoneNumber"
+          placeholder="99-999999" formControlName="phoneNumber"/>
+      </div>
+      <div class="flex align-items-center gap-3 mb-3">
+        <label for="birthday" class="font-semibold w-7rem">Data urodzenia</label>
+        <p-calendar class="account-inputs" id="birthday" formControlName="birthday"/>
+      </div>
+    </div>
+  </form>
+  <div class="mb-4 flex justify-content-center">
+    <p-button [rounded]="true" (click)="saveAccountData()"
+              class="full-button" label="Zapisz"/>
+  </div>
+</div>
