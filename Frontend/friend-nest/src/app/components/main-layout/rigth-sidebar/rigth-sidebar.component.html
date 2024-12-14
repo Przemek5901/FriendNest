@@ -1,19 +1,19 @@
-<div class="w-20rem h-20rem right-sidebar">
+<div class="w-20rem right-sidebar">
   <div>
     <p class="text-3xl ml-4 font-bold mt-3 mb-4">Wyszukaj</p>
   </div>
   <div class="card flex justify-content-center">
     <p-autoComplete
       #autoComplete
-      [(ngModel)]="selectedResult"
-      [group]="true"
-      [suggestions]="filteredGroups"
-      [emptySelectionMessage]="'Brak wyników'"
       (input)="onInputChange($event)"
       (keydown.enter)="onKeydown(autoComplete)"
       (onSelect)="openPostProfile($event)"
-      scrollHeight="200"
-      placeholder="Wpisz aby wyszukać">
+      [(ngModel)]="selectedResult"
+      [emptySelectionMessage]="'Brak wyników'"
+      [group]="true"
+      [suggestions]="filteredGroups"
+      placeholder="Wpisz aby wyszukać"
+      scrollHeight="200">
       <ng-template let-group pTemplate="group">
         <div class="flex align-items-center">
           <span>{{ group.label }}</span>
@@ -21,16 +21,25 @@
       </ng-template>
       <ng-template let-item pTemplate="item">
         <div class="flex align-items-center">
-          @if(item.value.profileImageUrl) {
+          @if (item.value.profileImageUrl) {
             <img [src]="item.value.profileImageUrl" alt="" class="icon">
           }
-          <span>{{item.label.length > 20 ?  (item.label.substring(0,23)) + '...' : item.label }}</span>
+          <span>{{ item.label.length > 20 ? (item.label.substring(0, 23)) + '...' : item.label }}</span>
         </div>
       </ng-template>
     </p-autoComplete>
   </div>
   <div>
     <p class="text-3xl ml-4 font-bold mt-3 mb-4">Najpopularniejsze</p>
+    <div class="mb-3">
+      @for (hashtagTo of hashtagList; track hashtagTo.hashtag.hashtagId) {
+        <div class="white-space-nowrap overflow-hidden text-overflow-ellipsis ml-3 mr-4 hashtag-container"
+        (click)="searchHashtag(hashtagTo.hashtag.tag)">
+          <p class="text-2xl w-10 font-bold mt-2 pl-2">{{ hashtagTo?.hashtag?.tag }}</p>
+          <p class="text-l w-10 -mt-3 text-400 pl-2">{{ 'Wpisy: ' + hashtagTo?.hashtagCount }}</p>
+        </div>
+      }
+    </div>
   </div>
 </div>
 

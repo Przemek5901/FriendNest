@@ -39,7 +39,7 @@
                        (click)="$event.stopPropagation()"></p-image>
             </div>
           }
-          <span>{{ postTo.post.content }}</span>
+          <span highlightHashtags (hashtagClicked)="onHashtagClicked($event)">{{ postTo.post.content }}</span>
         </div>
         @if (postTo.isQuoted && !isNested) {
           <div class="scale" (click)="$event.stopPropagation()">

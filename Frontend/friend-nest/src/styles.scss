@@ -148,3 +148,13 @@ body {
     color: white;
   }
 }
+
+.highlighted-hashtag {
+  color: var(--primary-color);
+  cursor: pointer;
+  text-decoration: none;
+}
+
+.highlighted-hashtag:hover {
+  text-decoration: underline;
+}

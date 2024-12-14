@@ -46,7 +46,7 @@
                    (click)="$event.stopPropagation()"></p-image>
         </div>
       }
-      <span>{{ postDetails.postTo.post.content }}</span>
+      <span highlightHashtags (hashtagClicked)="onHashtagClicked($event)">{{ postDetails.postTo.post.content }}</span>
     </div>
     @if (postDetails.postTo.isQuoted && postDetails.postTo.quotedPost) {
       <div class="scale">

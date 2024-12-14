@@ -2,7 +2,9 @@ package pl.polsl.friendnest.model;
 
 import jakarta.persistence.Column;
 import jakarta.persistence.Embeddable;
+import lombok.AllArgsConstructor;
 import lombok.Getter;
+import lombok.NoArgsConstructor;
 import lombok.Setter;
 import org.hibernate.Hibernate;
 
@@ -12,6 +14,8 @@ import java.util.Objects;
 @Getter
 @Setter
 @Embeddable
+@AllArgsConstructor
+@NoArgsConstructor
 public class PostHashtagId implements Serializable {
     private static final long serialVersionUID = 3568881560704105877L;
     @Column(name = "\"HASHTAG_ID\"", nullable = false)
