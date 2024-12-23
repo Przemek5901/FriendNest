@@ -81,7 +81,7 @@
 
           <p-button
             (click)="toggleButton(4, $event)"
-            [disabled]="buttonStates[4].disabled || postTo.isQuoted || postTo.isReposted"
+            [disabled]="buttonStates[4].disabled || postTo.isQuoted || postTo.isReposted || commentId"
             [ngClass]="postTo.userInteractions.isReposted ? 'activated-button' : 'default-button'"
             [rounded]="true"
             [text]="true"
@@ -92,7 +92,7 @@
 
           <p-button
             (click)="openQuoteModal($event)"
-            [disabled]="buttonStates[5].disabled || postTo.isQuoted || postTo.isReposted"
+            [disabled]="buttonStates[5].disabled || postTo.isQuoted || postTo.isReposted || commentId"
             [ngClass]="postTo.userInteractions.isQuoted ? 'activated-button' : 'default-button'"
             [rounded]="true"
             [text]="true"

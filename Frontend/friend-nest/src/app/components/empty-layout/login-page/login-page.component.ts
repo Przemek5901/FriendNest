@@ -71,7 +71,7 @@ export class LoginPageComponent extends BaseComponent implements OnInit {
         [
           Validators.required,
           Validators.pattern(
-            /^(?=.*[A-Z])(?=.*\d)(?=.*[@$!%*?&])[A-Za-z\d@$!%*?&]+$/,
+            /^(?=.*[A-Z])(?=.*\d)(?=.*[@$!%*?&])[A-Za-z\d!@#$%^&*?<>.|'+=`~]+$/,
           ),
         ],
       ],
@@ -90,8 +90,7 @@ export class LoginPageComponent extends BaseComponent implements OnInit {
     if (this.registerForm.invalid) {
       this.showFieldErrors(this.registerForm);
       return;
-    }
-    if (this.registerForm.valid) {
+    } else if (this.registerForm.valid) {
       this.loginService
         .register(this.userFormToRegisterRequest(this.registerForm))
         .pipe(this.autoUnsubscribe())

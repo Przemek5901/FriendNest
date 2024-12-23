@@ -52,7 +52,7 @@ export abstract class BaseComponent implements OnDestroy {
     });
   }
 
-  hadleHttpError(error: HttpErrorResponse): void {
+  protected hadleHttpError(error: HttpErrorResponse): void {
     if (error?.error?.message) {
       this.messageService.add({
         severity: 'error',
@@ -68,7 +68,7 @@ export abstract class BaseComponent implements OnDestroy {
     }
   }
 
-  openSuccessToast(message: string): void {
+  protected openSuccessToast(message: string): void {
     this.messageService.add({
       severity: 'success',
       summary: 'Sukces',
@@ -76,7 +76,7 @@ export abstract class BaseComponent implements OnDestroy {
     });
   }
 
-  getUser(): User {
+  protected getUser(): User {
     const storedUser = localStorage.getItem('user');
     if (storedUser) {
       return JSON.parse(storedUser);

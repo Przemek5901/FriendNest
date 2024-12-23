@@ -312,8 +312,8 @@ export class ProfileComponent extends BaseComponent implements OnInit {
   ) {
     this.followerToList = followerToList;
     this.followerModalHeader = this.isFollowers
-      ? 'Profile obserwujące'
-      : 'Obserwowane profile';
+      ? 'Obserwowane profile'
+      : 'Profile obserwujące';
     if (closeModal) {
       this.visibleFollowers = !this.visibleFollowers;
     }
