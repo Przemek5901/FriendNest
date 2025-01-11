@@ -1,6 +1,6 @@
 <div class="w-full min-h-full flex flex-row search-container">
   <div class="container">
-    @if (chats.length === 0) {
+    @if (chats.length === 0 && !selectedChat) {
       <div class="w-full h-full flex justify-content-center align-items-center">
         <span class="text-2xl text-400">Brak rozpoczętych czatów do wyświetlenia</span>
       </div>
